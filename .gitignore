@@ -1,0 +1,8 @@
+*/*/*Debug/*
+*/*/*Debug/*
+*.ncb
+*.sln
+*.suo
+*.user
+*/*/debug/*
+*/*/*/Debug/*
