@@ -6,7 +6,7 @@
 void main ()
 {
 
-    setbuf (stdout, (char *) NULL);
+    // setbuf (stdout, (char *) NULL);
 
     printf ("coef_cnt(0) = %d\n", coef_cnt (0));
     printf ("coef_cnt(1) = %d\n", coef_cnt (1));
