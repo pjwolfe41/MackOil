@@ -1,0 +1,71 @@
+# compiler = TurboC
+# compiler = BorlandC
+# compiler = WatcomC
+
+# TurboC makefile macros (?)
+.IF $(compiler) == TurboC
+INCLUDE = C:/TC/INCLUDE
+ARFLAGS = -r
+AR = ar $(ARFLAGS)
+CFLAGS = -A -N -mh -I. -I../h
+CC = tcc -c $(CFLAGS)
+LDFLAGS = $(CFLAGS)
+LD = tcc $(LDFLAGS)
+LINTOPT = -iC:/lint co-tc.lnt -iC:/lint -i../h -i$(INCLUDE) options.lnt
+.END
+
+# Borland C makefile macros (?)
+.IF $(compiler) == BorlandC
+INCLUDE = E:/BC4/INCLUDE
+ARFLAGS = -r
+AR = ar $(ARFLAGS)
+CFLAGS = -A -mh -I. -I../h
+CC = bcc -c $(CFLAGS)
+LDFLAGS = $(CFLAGS)
+LD = bcc $(LDFLAGS)
+LINTOPT = -iC:/lint co-bc.lnt -iC:/lint -i../h -i$(INCLUDE) options.lnt
+.END
+
+# makefile for WATCOM macros
+.IF $(compiler) == WatcomC
+INCLUDE = C:/WATCOM/H
+ARFLAGS = -r
+AR = ar $(ARFLAGS)
+CFLAGS = /fpi87 /sg /i="c:\watcom\h"
+CC = wcc386 $(CFLAGS)
+LDFLAGS = $(CFLAGS) /k8192 /l=dos4g
+LD = wcl386 $(LDFLAGS)
+LINTOPT = -iC:/lint co-wc.lnt -iC:/lint -i../h -i$(INCLUDE) options.lnt
+.END
+
+%.obj : %.c
+	$(CC) $^
+
+header = ../h/prepdata.h ../h/readdata.h ../h/utility.h
+subs = prepdata.c
+object = prepdata.obj
+libs = ..\\\readdata\\\readdata.lib ..\\\utility\\\utility.lib
+
+diff : result0 result
+	- diff -h -b result0 result > diff
+	if test -s diff ; then vi diff ; else print NO CHANGE ; fi
+
+result .PRECIOUS : testprog.exe testdata.dat testdata.fit atesarea.fit
+	testprog testdata code > result
+	testprog testdata obs >> result
+	testprog testdata fit 9 >> result
+	testprog testdata resid 3 >> result
+	testprog testdata resid 3 atesarea >> result
+
+testprog.exe : testprog.obj prepdata.lib $(libs)
+	$(LD) testprog.obj prepdata.lib $(libs)
+
+$(object) : $(header)
+prepdata.lib : $(object)
+	$(AR) prepdata.lib $(object)
+
+lint  : testprog.c $(header) $(subs)
+	- lint $(LINTOPT) -e771 testprog.c $(subs) > lint
+
+clean :
+	rm -f *.obj *.lib *.exe *.err
