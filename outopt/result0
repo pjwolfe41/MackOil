@@ -1,0 +1,124 @@
+opt_zvalue: Bouguer 2
+opt_scale: 150000
+opt_post: Helvetica-Bold 8 45
+opt_grid: 0.5 2
+opt_contour: 0 10 L 0 0
+gsave
+/Helvetica findfont
+12 scalefont setfont
+-72.1 inch 7.925 inch moveto
+90 rotate
+(label) centeredshow
+grestore
+gsave
+0.5 setgray
+2 setlinewidth
+newpath
+99.9 inch 1.8 inch moveto
+99.8 inch 1.6 inch lineto
+99.7 inch 1.4 inch lineto
+stroke
+grestore
+101 1 0 -67 1 90 -10
+  returns 0
+199 -2 1 -45 2 30 -5
+  returns 1
+278 3.5 7.8 -11 0 0 0
+  returns 1
+355 -4.1 14 -0.4 0 0 0
+  returns 0
+500 5 0.5 0 5 0 0.2
+  returns 1
+600 -6.6 -2 0.4 0 0 0
+  returns 1
+700 7.8 -0.8 11 7 -12 0
+  returns 1
+800 -8.8 -88 45 8 44 1.45
+  returns 1
+999 9 -9.9 67 9 88 7.7
+  returns 1
+*** call to error_stop: ZVALUE specified more than once in file output.opt
+*** call to error_stop: characters after ++ on line 6 of file output.opt
+*** call to error_stop: ZVALUE specified more than once in file output.opt
+*** call to error_stop: ZVALUE has the wrong number of fields in file output.opt
+*** call to error_stop: ZVALUE specified more than once in file output.opt
+*** call to error_stop: invalid digits field in output.opt ZVALUE: 53
+*** call to error_stop: ZVALUE specified more than once in file output.opt
+*** call to error_stop: invalid digits field in output.opt ZVALUE: .5
+*** call to error_stop: SCALE specified more than once in file output.opt
+*** call to error_stop: invalid ratio field in output.opt SCALE: 150000:1
+*** call to error_stop: POST specified more than once in file output.opt
+*** call to error_stop: invalid labelsize field in output.opt POST: 0
+*** call to error_stop: invalid labelrotate field in output.opt POST: AG
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid meshsize field in output.opt CONTOUR: 0
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid meshsize field in output.opt CONTOUR: xxx
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid gridmethod field in output.opt CONTOUR: 2.5
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid gridmethod field in output.opt CONTOUR: 0
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid gridmethod field in output.opt CONTOUR: 21
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid intervalsize field in output.opt CONTOUR: zzz
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid intervalsize field in output.opt CONTOUR: 0
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: intervalspec is not SIZE or LEVELS in output.opt CONTOUR: levsize
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid numberoflevels field in output.opt CONTOUR: 6.3
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid numberoflevels field in output.opt CONTOUR: 0
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: CONTOUR has the wrong number of fields in file output.opt
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: CONTOUR has the wrong number of fields in file output.opt
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid npoints field in output.opt CONTOUR: 3
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid npoints field in output.opt CONTOUR: 21
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: CONTOUR has the wrong number of fields in file output.opt
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid bspline order field in output.opt CONTOUR: 1
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid bspline order field in output.opt CONTOUR: 11
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid npoints field in output.opt CONTOUR: 3
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid npoints field in output.opt CONTOUR: 21
+*** call to error_stop: CONTOUR specified more than once in file output.opt
+*** call to error_stop: invalid smoothmethod in output.opt CONTOUR: nonlinear
+*** call to error_stop: MAPLABEL has the wrong number of fields in file output.opt
+*** call to error_stop: invalid xpos field in output.opt MAPLABEL: 110..2
+*** call to error_stop: invalid ypos field in output.opt MAPLABEL: 3A5.1
+*** call to error_stop: invalid fontsize field in output.opt MAPLABEL: 0
+*** call to error_stop: invalid fontsize field in output.opt MAPLABEL: 1A
+*** call to error_stop: invalid rotate field in output.opt MAPLABEL: .90
+*** call to error_stop: invalid width field in output.opt MAPLINE: 0
+*** call to error_stop: invalid intensity field in output.opt MAPLINE: INT
+*** call to error_stop: invalid coordinate pairs in output.opt MAPLINE 
+*** call to error_stop: cannot allocate space for MAPLINE coordinates 
+*** call to error_stop: invalid coordinate pairs in output.opt MAPLINE 
+*** call to error_stop: cannot allocate space for MAPLINE coordinates 
+*** call to error_stop: invalid coordinate pairs in output.opt MAPLINE 
+*** call to error_stop: invalid coordinate pairs in output.opt MAPLINE 
+*** call to error_stop: invalid coordinate pairs in output.opt MAPLINE 
+*** call to error_stop: invalid datatype in output.opt SELECT: xxx
+*** call to error_stop: invalid operator in output.opt SELECT: ==
+*** call to error_stop: invalid value field in output.opt SELECT: ab
+*** call to error_stop: SELECT has the wrong number of fields in output.opt
+*** call to error_stop: OR not found in output.opt SELECT: and
+*** call to error_stop: invalid datatype in output.opt SELECT: xxx
+*** call to error_stop: invalid operator in output.opt SELECT: GE
+*** call to error_stop: invalid value field in output.opt SELECT: 13a2
+*** call to error_stop: SELECT has the wrong number of fields in output.opt
+opt_zvalue: Bouguer 0

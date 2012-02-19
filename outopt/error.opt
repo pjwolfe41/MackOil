@@ -1,0 +1,80 @@
+
+
+ZVALUE  "Bouguer"  2
+ZVALUE  "Bouguer" ++
+                      2
+ZVALUE  "Bouguer" ++  2
+
+ZVALUE  Bouguer  53
+ZVALUE  Bouguer  .5
+
+SCALE  150000
+SCALE  150000:1
+
+POST  Helvetica-Bold  8  45
+POST  alpha 0 AG
+
+CONTOUR .1 2 LEVELS 10 linear
+CONTOUR  0 2 LEVELS 10 linear
+CONTOUR  xxx 2 LEVELS 10 linear
+CONTOUR .1 2.5 LEVELS 10 linear
+CONTOUR .1 0 LEVELS 10 linear
+CONTOUR .1 21 LEVELS 10 linear
+CONTOUR .1 2 SIZE .4 linear
+CONTOUR .1 2 SIZE zzz linear
+CONTOUR .1 2 SIZE 0 linear
+CONTOUR .1 2 levsize 12 linear
+CONTOUR .1 2 LEVELS 10 linear
+CONTOUR .1 2 LEVELS 6.3 linear
+CONTOUR .1 2 LEVELS 0 linear
+CONTOUR .1 2 LEVELS 10 linear 12
+CONTOUR .1 2 LEVELS 10 cubic_spline 
+CONTOUR .1 2 LEVELS 10 cubic_spline 3
+CONTOUR .1 2 LEVELS 10 cubic_spline 4
+CONTOUR .1 2 LEVELS 10 cubic_spline 20
+CONTOUR .1 2 LEVELS 10 cubic_spline 21
+CONTOUR .1 2 LEVELS 10 bspline 6 10
+CONTOUR .1 2 LEVELS 10 bspline 6 10 15
+CONTOUR .1 2 LEVELS 10 bspline 1 10
+CONTOUR .1 2 LEVELS 10 bspline 11 10
+CONTOUR .1 2 LEVELS 10 bspline 6 3
+CONTOUR .1 2 LEVELS 10 bspline 6 4
+CONTOUR .1 2 LEVELS 10 bspline 6 20
+CONTOUR .1 2 LEVELS 10 bspline 6 21
+CONTOUR .1 2 LEVELS 10 nonlinear
+
+MAPLABEL "label" 110.2 35.1 "Helvetica" 12 90
+MAPLABEL "label" 110.2 35.1 "Helvetica" 12 90 95
+MAPLABEL "label" 110..2 35.1 "Helvetica" 12 90
+MAPLABEL "label" 110.2 3A5.1 "Helvetica" 12 90
+MAPLABEL "label" 110.2 35.1 "Helvetica" 0 90
+MAPLABEL "label" 110.2 35.1 "Helvetica" 1A 90
+MAPLABEL "label" 110.2 35.1 "Helvetica" 12 .90
+
+MAPLINE 2 .5  1 9  2 8   3 7
+MAPLINE 0 .5  1 9  2 8   3 7
+MAPLINE 2  INT  1 9  2 8   3 7
+MAPLINE 2 .5  
+MAPLINE 2 .5  1 
+MAPLINE 2 .5  1 9  2 
+MAPLINE 2  1  A 2
+MAPLINE 2  1  2 B
+
+SELECT  code != 1000
+SELECT  obs > -50
+SELECT  x < 500
+SELECT  y >= -100
+SELECT  resid <= 44.
+SELECT  fit = 40
+SELECT  xxx = 10
+SELECT  code == 500
+SELECT  fit > ab
+SELECT  obs = 10 30
+
+SELECT  x > 50 OR x < -50
+SELECT  code = 500 OR code > 1000
+SELECT  code = 22 and x < 10
+SELECT  code = 22 or xxx > 50
+SELECT  code = 22 or x GE 10
+SELECT  code = 22 or x >= 13a2
+SELECT  code = 22 or x > 15 why not 
