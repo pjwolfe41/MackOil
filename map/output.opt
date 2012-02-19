@@ -1,0 +1,106 @@
+
+//  this file contains options used by the programs map, list, and con2r to
+//  control output formatting and display 
+
+//  this example file contains the default settings for the options together
+//  with explanatory comments; modify this file as needed to obtain outputs
+//  in the desired form
+
+//  in this file comments are denoted by a double slash;  all information on
+//  a line after a double slash is ignored; blank lines are also ignored
+
+//  if a specification requires more than one line in the file to contain it,
+//  all lines but the last one should end with ++, which denotes continued on
+//  the next line
+
+//  ZVALUE specifies the name of the observed values that are read from the
+//  data file and fitted by the fitting program, if fitting is performed;
+//  the number of digits to the right of the decimal point that are to be
+//  shown when observed values, fitted values, or residuals are displayed
+//  is also specified; ZVALUE is required
+//
+//  ZVALUE "zname" digits
+//
+//	zname  - name of the observed values, which must be enclosed in 
+//               parentheses
+//	digits - the number of digits to the right of the decimal point
+//               that are to be shown
+
+ZVALUE  "Bouguer"  2
+
+//  SCALE specifies the map scale; the programs use this scale assuming that
+//  the original x and y coordinate values are in latitude and longitude; 
+//  SCALE is required if programs map or con2r are used
+//
+//  SCALE  ratio
+//
+//	ratio  - the number of inches on the earth's surface that is 
+//               represented by one inch on the map 
+
+SCALE  150000
+
+//  POST specifies the how points are posted on a map; POST is required if
+//  program map is used
+//
+//  POST  labelfont  labelsize  labelrotate
+//
+//	labelfont   - the font used to label the points
+//	labelsize   - the font size used to label the points
+//	labelrotate - the number of degrees that the labels are to be 
+//	              rotated from the horizontal
+
+POST  Helvetica-Bold  8  45
+
+//  MAPLABEL specifies a label that is to be drawn on the map; there can be
+//  several MAPLABELs but none is required
+//
+//  MAPLABEL  "label"  x  y  font  fontsize  rotate
+//
+//	label    - the label, which must be enclosed in parentheses
+//	x and y  - the coordinates (longitude and latitude) at which the
+//                 label is to be drawn
+//	font     - the font used for the label
+//	fontsize - the font size used for the label
+//	rotate   - the number of degrees that the label is to be rotated 
+//	           from the horizontal
+
+MAPLABEL "HELLO" 87. 30.70 "Helvetica" 12 90
+MAPLABEL "AGAIN" 87.1 30.78 "Helvetica" 12 90
+
+//  MAPLINE specifies a line that is to be drawn on the map; there can be
+//  several MAPLINEs but none is required
+//
+//  MAPLINE  width  intensity  x1 y1  x2 y2  ... 
+//
+//	width     - the width of the line in .01 inches
+//      intensity - the intensity used for the line (0 <= intensity <= 1;
+//                  0 = black and 1 = white)
+//	x1 and y1 - the coordinates (longitude and latitude) of the first
+//                  point on the line;
+//	x2 and y2 - the coordinates (longitude and latitude) of the second
+//                  point on the line
+//         ...
+//                  
+//  as many coordinate pairs as required can be used, to draw any desired
+//  shape
+
+
+//  SELECT specifies a condition to be used to select points for inclusion
+//  in the map or list; there can be several SELECTs but none is required
+//  (if none is used then all the points in the data file are included)
+//
+//  SELECT  datatype  operator  value
+//
+//	datatype - the data type used for the selection; must be one of:
+//                 code, obs, x, y, fit, resid
+//	operator - an operator specifying how the data values must relate
+//		   to the following value for the point to be selected;
+//                 must be one of:  <, <=, =, !=, >, >=
+//	value    - a numeric value
+//
+//  here are some examples:
+//
+//	SELECT  code >= 3000
+//	SELECT  y > 43.35
+//	SELECT  resid <= -.4  or  resid >= .4
+

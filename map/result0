@@ -1,0 +1,196 @@
+/Helvetica findfont
+10 scalefont setfont
+0.5 8 0.5 10.5 mapborder
+clippage
+/Helvetica findfont
+18 scalefont setfont
+4.25 inch 9.9 inch moveto
+(Ates, Florida - Station Codes) centeredshow
+gsave
+/Helvetica findfont
+12 scalefont setfont
+4.16427 inch 2.80787 inch moveto
+90 rotate
+(HELLO) centeredshow
+grestore
+gsave
+/Helvetica findfont
+12 scalefont setfont
+1.65615 inch 5.13582 inch moveto
+90 rotate
+(AGAIN) centeredshow
+grestore
+/Helvetica-Bold findfont
+8 scalefont setfont
+/labelrotate 45 def
+/labelxpos 3 def
+/labelypos -3 def
+7.39136 inch 5.87303 inch moveto (564) postpoint
+5.37647 inch 5.96031 inch moveto (643) postpoint
+5.35132 inch 5.78087 inch moveto (644) postpoint
+5.83643 inch 5.91185 inch moveto (645) postpoint
+5.94092 inch 5.83421 inch moveto (648) postpoint
+6.15406 inch 5.79545 inch moveto (649) postpoint
+6.42579 inch 5.79057 inch moveto (650) postpoint
+2.54664 inch 5.93119 inch moveto (702) postpoint
+3.93848 inch 5.9506 inch moveto (711) postpoint
+4.04712 inch 5.88755 inch moveto (714) postpoint
+1.13355 inch 5.92637 inch moveto (793) postpoint
+1.31324 inch 5.92149 inch moveto (794) postpoint
+1.44727 inch 5.91185 inch moveto (795) postpoint
+1.71485 inch 5.91185 inch moveto (796) postpoint
+1.86524 inch 5.80998 inch moveto (959) postpoint
+1.22144 inch 5.08732 inch moveto (975) postpoint
+1.1587 inch 4.73814 inch moveto (980) postpoint
+1.10865 inch 4.60716 inch moveto (1002) postpoint
+1.1504 inch 4.36467 inch moveto (1003) postpoint
+1.25904 inch 4.26286 inch moveto (1004) postpoint
+1.55982 inch 4.03972 inch moveto (1008) postpoint
+showpage
+/Helvetica findfont
+10 scalefont setfont
+0.5 8 0.5 10.5 mapborder
+clippage
+/Helvetica findfont
+18 scalefont setfont
+4.25 inch 9.9 inch moveto
+(Ates, Florida - Bouguer Values) centeredshow
+gsave
+/Helvetica findfont
+12 scalefont setfont
+4.16427 inch 2.80787 inch moveto
+90 rotate
+(HELLO) centeredshow
+grestore
+gsave
+/Helvetica findfont
+12 scalefont setfont
+1.65615 inch 5.13582 inch moveto
+90 rotate
+(AGAIN) centeredshow
+grestore
+/Helvetica-Bold findfont
+8 scalefont setfont
+/labelrotate 45 def
+/labelxpos 3 def
+/labelypos -3 def
+7.39136 inch 5.87303 inch moveto (65.57) postpoint
+5.37647 inch 5.96031 inch moveto (67.45) postpoint
+5.35132 inch 5.78087 inch moveto (67.36) postpoint
+5.83643 inch 5.91185 inch moveto (67.03) postpoint
+5.94092 inch 5.83421 inch moveto (66.71) postpoint
+6.15406 inch 5.79545 inch moveto (66.28) postpoint
+6.42579 inch 5.79057 inch moveto (66.01) postpoint
+2.54664 inch 5.93119 inch moveto (71.62) postpoint
+3.93848 inch 5.9506 inch moveto (69.43) postpoint
+4.04712 inch 5.88755 inch moveto (69.35) postpoint
+1.13355 inch 5.92637 inch moveto (73.58) postpoint
+1.31324 inch 5.92149 inch moveto (73.40) postpoint
+1.44727 inch 5.91185 inch moveto (73.15) postpoint
+1.71485 inch 5.91185 inch moveto (72.97) postpoint
+1.86524 inch 5.80998 inch moveto (72.62) postpoint
+1.22144 inch 5.08732 inch moveto (73.56) postpoint
+1.1587 inch 4.73814 inch moveto (73.02) postpoint
+1.10865 inch 4.60716 inch moveto (73.85) postpoint
+1.1504 inch 4.36467 inch moveto (73.73) postpoint
+1.25904 inch 4.26286 inch moveto (73.42) postpoint
+1.55982 inch 4.03972 inch moveto (73.15) postpoint
+showpage
+/Helvetica findfont
+10 scalefont setfont
+0.5 8 0.5 10.5 mapborder
+clippage
+/Helvetica findfont
+18 scalefont setfont
+4.25 inch 9.9 inch moveto
+(Ates, Florida - Degree 9 Fit of Bouguer Values) centeredshow
+gsave
+/Helvetica findfont
+12 scalefont setfont
+4.16427 inch 2.80787 inch moveto
+90 rotate
+(HELLO) centeredshow
+grestore
+gsave
+/Helvetica findfont
+12 scalefont setfont
+1.65615 inch 5.13582 inch moveto
+90 rotate
+(AGAIN) centeredshow
+grestore
+/Helvetica-Bold findfont
+8 scalefont setfont
+/labelrotate 45 def
+/labelxpos 3 def
+/labelypos -3 def
+7.39136 inch 5.87303 inch moveto (65.66) postpoint
+5.37647 inch 5.96031 inch moveto (67.87) postpoint
+5.35132 inch 5.78087 inch moveto (67.63) postpoint
+5.83643 inch 5.91185 inch moveto (66.86) postpoint
+5.94092 inch 5.83421 inch moveto (66.58) postpoint
+6.15406 inch 5.79545 inch moveto (66.15) postpoint
+6.42579 inch 5.79057 inch moveto (65.71) postpoint
+2.54664 inch 5.93119 inch moveto (71.60) postpoint
+3.93848 inch 5.9506 inch moveto (69.60) postpoint
+4.04712 inch 5.88755 inch moveto (69.28) postpoint
+1.13355 inch 5.92637 inch moveto (73.50) postpoint
+1.31324 inch 5.92149 inch moveto (73.42) postpoint
+1.44727 inch 5.91185 inch moveto (73.31) postpoint
+1.71485 inch 5.91185 inch moveto (73.01) postpoint
+1.86524 inch 5.80998 inch moveto (72.66) postpoint
+1.22144 inch 5.08732 inch moveto (73.42) postpoint
+1.1587 inch 4.73814 inch moveto (73.48) postpoint
+1.10865 inch 4.60716 inch moveto (73.50) postpoint
+1.1504 inch 4.36467 inch moveto (73.57) postpoint
+1.25904 inch 4.26286 inch moveto (73.53) postpoint
+1.55982 inch 4.03972 inch moveto (73.17) postpoint
+showpage
+/Helvetica findfont
+10 scalefont setfont
+0.5 8 0.5 10.5 mapborder
+clippage
+/Helvetica findfont
+18 scalefont setfont
+4.25 inch 9.9 inch moveto
+(Ates, Florida - Degree 3 Fit Residual of Bouguer Values) centeredshow
+gsave
+/Helvetica findfont
+12 scalefont setfont
+4.16427 inch 2.80787 inch moveto
+90 rotate
+(HELLO) centeredshow
+grestore
+gsave
+/Helvetica findfont
+12 scalefont setfont
+1.65615 inch 5.13582 inch moveto
+90 rotate
+(AGAIN) centeredshow
+grestore
+/Helvetica-Bold findfont
+8 scalefont setfont
+/labelrotate 45 def
+/labelxpos 3 def
+/labelypos -3 def
+7.39136 inch 5.87303 inch moveto (0.27) postpoint
+5.37647 inch 5.96031 inch moveto (0.46) postpoint
+5.35132 inch 5.78087 inch moveto (0.36) postpoint
+5.83643 inch 5.91185 inch moveto (0.64) postpoint
+5.94092 inch 5.83421 inch moveto (0.46) postpoint
+6.15406 inch 5.79545 inch moveto (0.28) postpoint
+6.42579 inch 5.79057 inch moveto (0.27) postpoint
+2.54664 inch 5.93119 inch moveto (0.17) postpoint
+3.93848 inch 5.9506 inch moveto (0.18) postpoint
+4.04712 inch 5.88755 inch moveto (0.27) postpoint
+1.13355 inch 5.92637 inch moveto (0.65) postpoint
+1.31324 inch 5.92149 inch moveto (0.58) postpoint
+1.44727 inch 5.91185 inch moveto (0.42) postpoint
+1.71485 inch 5.91185 inch moveto (0.49) postpoint
+1.86524 inch 5.80998 inch moveto (0.18) postpoint
+1.22144 inch 5.08732 inch moveto (-0.20) postpoint
+1.1587 inch 4.73814 inch moveto (-0.97) postpoint
+1.10865 inch 4.60716 inch moveto (-0.23) postpoint
+1.1504 inch 4.36467 inch moveto (-0.31) postpoint
+1.25904 inch 4.26286 inch moveto (-0.46) postpoint
+1.55982 inch 4.03972 inch moveto (-0.20) postpoint
+showpage

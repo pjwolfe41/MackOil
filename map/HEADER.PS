@@ -1,0 +1,141 @@
+
+errordict begin
+/handleerror
+{
+    100 200 moveto
+    /Helvetica-Bold findfont
+    14 scalefont
+    setfont
+    (handleerror entered) show
+    100 150 moveto
+    (command = ) show
+    userdict begin /str 100 string def end
+    /command load str cvs str show
+    100 100 moveto
+    (errorname = ) show
+    userdict begin /str 100 string def end
+    errorname str cvs str show
+    showpage
+} def
+end
+
+/centeredshow  {dup stringwidth pop 2 div neg 0 rmoveto show } def
+
+/inch {72 mul} def
+
+/plussize 1 def
+
+/postpoint
+{
+     gsave 
+     1 setlinewidth
+     currentpoint translate 0 0 moveto
+     newpath
+     0 plussize moveto 0 plussize neg lineto plussize 0 moveto 
+                plussize neg 0 lineto
+     stroke
+     labelrotate rotate
+     labelxpos labelypos moveto show
+     grestore
+} def
+
+/border  .5 inch  def
+
+/clippage
+{
+    newpath
+    border .1 inch sub border .1 inch sub moveto
+    border .1 inch sub 11 inch border sub .1 inch add lineto
+    8.5 inch border sub .1 inch add 11 inch border sub .1 inch add lineto
+    8.5 inch border sub .1 inch add border .1 inch sub lineto
+    closepath
+    clip
+} def
+
+/attachleft
+{
+    gsave
+    .9 setgray
+    .5 setlinewidth
+    newpath
+    border border moveto border 11 inch border sub lineto
+    stroke
+
+    0 setgray
+    .25 inch 5.5 inch moveto
+    270 rotate
+    centeredshow
+
+    grestore
+} def
+
+/attachtop
+{
+    gsave
+    .9 setgray
+    .5 setlinewidth
+    newpath
+    border 11 inch border sub moveto 8.5 inch border sub
+                                    11 inch border sub lineto
+    stroke
+
+    0 setgray
+    4.25 inch 10.68 inch moveto
+    centeredshow
+
+    grestore
+} def
+
+/attachright
+{
+    gsave
+    .9 setgray
+    .5 setlinewidth
+    newpath
+    8.5 inch border sub border moveto  8.5 inch border sub
+                                      11 inch border sub lineto
+    stroke
+
+    0 setgray
+    8.25 inch 5.5 inch moveto
+    90 rotate
+    centeredshow
+
+    grestore
+} def
+
+/attachbottom
+{
+    gsave
+
+    .9 setgray
+    .5 setlinewidth
+    newpath
+    border border moveto 8.5 inch border sub border lineto
+    stroke
+
+    0 setgray
+    4.25 inch .25 inch moveto
+    centeredshow
+
+    grestore
+} def
+
+/mapborder
+{
+    gsave
+    /ytop exch def
+    /ybot exch def
+    /xright exch def
+    /xleft exch def
+    2 setlinewidth
+    newpath
+    xleft inch ybot inch moveto
+    xleft inch ytop inch lineto
+    xright inch ytop inch lineto
+    xright inch ybot inch lineto
+    closepath
+    stroke
+    grestore
+} def
+
