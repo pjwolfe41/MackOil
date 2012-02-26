@@ -779,7 +779,7 @@ static int nextspecs (char ***field)
 					error_stop ("cannot allocate space for option spec on",
 			                                              cur_line);
 				*line = '\0';
-				strcpy(fld[nfield++], line - cur_fld_len);
+				strcpy_s(fld[nfield++], cur_fld_len + 1, line - cur_fld_len);
 				cur_fld_len = 0;
 			}
 	    }

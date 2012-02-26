@@ -58,7 +58,7 @@ int readdata (char *dataname, char **title,
 			*title = new char[((unsigned) len + 1)];
 			if (*title == NULL)
 				error_stop ("cannot allocate space for data title", "");
-			strncpy (*title, beg, (unsigned) len);
+			strncpy_s (*title, len + 1, beg, (unsigned) len);
 			(*title)[len] = '\0';
 		}
     }
@@ -68,7 +68,7 @@ int readdata (char *dataname, char **title,
     fprintf (stderr, "read data\n");
     for (i = 0; ; i++)
     {
-        status = fscanf (fp, "%ld %lf %lf %lf %lf %lf", &inpcode, &obs,
+		status = fscanf_s (fp, "%ld %lf %lf %lf %lf %lf", &inpcode, &obs,
 	                                       &dlat, &dat, &dlong, &dong);
 
         fprintf (stderr, "station %ld    \r", inpcode);
