@@ -24,7 +24,7 @@
 typedef enum {CODE, OBS, FIT, RESID} DATATYPE;
 
 int prepdata (int argc, char *argv[], 
-	      char **title, DATATYPE *data_type,
-              unsigned long **code, float **x, float **y, float **z,
-	      int *fit_degree, float **fit, float **resid);
+			  char **title, DATATYPE *data_type,
+              unsigned long **code, double **x, double **y, double **z,
+			  int *fit_degree, double **fit, double **resid);
 

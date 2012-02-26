@@ -69,8 +69,8 @@ void opt_mapline (double hscale, double vscale, double xleft, double ybot);
 **  conditions.
 */
 
-int opt_select (unsigned long code, float x, float y, float z, 
-                int fit_computed, float fit, float resid);
+int opt_select (unsigned long code, double x, double y, double z, 
+                int fit_computed, double fit, double resid);
 
 /*
 **  opt_grid - return option CONTOUR gridding parameters.

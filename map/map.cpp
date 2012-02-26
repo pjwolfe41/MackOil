@@ -15,11 +15,11 @@
 
 static void write_panel (char *maptitle, DATATYPE data_type,
                          int npoint, unsigned long *code,
-			 float *x_inch, float *y_inch, float *z,
-			 float *fit, float *resid,
-			 double hscale, double vscale,
-			 double xmin, double xmax, double ymin, double ymax,
-			 int zdigits,
+						 double *x_inch, double *y_inch, double *z,
+						 double *fit, double *resid,
+						 double hscale, double vscale,
+						 double xmin, double xmax, double ymin, double ymax,
+						 int zdigits,
                          int col, int ncol, int row, int nrow);
 
 
@@ -31,8 +31,8 @@ void main (int argc, char *argv[])
     DATATYPE data_type;
     double hscale, vscale;
     double xmin, xmax, ymin, ymax;
-    float *x, *y, *z;
-    float *fit, *resid;
+    double *x, *y, *z;
+    double *fit, *resid;
     int fit_degree;
     int i, j, k;
     int ncol, nrow;
@@ -53,27 +53,27 @@ void main (int argc, char *argv[])
     k = 0;
     for (i = 0; i < npoint; i++)
     {
-	float fitval, residval;
-	if (fit_degree > 0) {
-		fitval = fit[i];
-		residval = resid[i];
-	}
-	else {
-		fitval = residval = 0.0;
-	}
+		double fitval, residval;
+		if (fit_degree > 0) {
+			fitval = fit[i];
+			residval = resid[i];
+		}
+		else {
+			fitval = residval = 0.0;
+		}
         if (opt_select (code[i], x[i], y[i], z[i], fit_degree, fitval, residval))
         {
-	    code[k] = code[i];
-	    x[k] = x[i];
-	    y[k] = y[i];
-	    z[k] = z[i];
-	    if (fit_degree)
-	    {
-	        fit[k] = fit[i];
-		resid[k] = resid[i];
-	    }
-	    ++k;
-	}
+			code[k] = code[i];
+			x[k] = x[i];
+			y[k] = y[i];
+			z[k] = z[i];
+			if (fit_degree)
+			{
+				fit[k] = fit[i];
+				resid[k] = resid[i];
+			}
+			++k;
+		}
     }
     npoint = k;
     if (npoint == 0)
@@ -90,19 +90,19 @@ void main (int argc, char *argv[])
     switch (data_type)
     {
         case CODE:
-	    sprintf (maptitle, "%s - Station Codes", datatitle);
-	    break;
+			sprintf_s (maptitle, 250, "%s - Station Codes", datatitle);
+			break;
         case OBS:
-	    sprintf (maptitle, "%s - %s Values", datatitle, zname);
-	    break;
-	case FIT:
-	    sprintf (maptitle, "%s - Degree %d Fit of %s Values",
+			sprintf_s (maptitle, 250, "%s - %s Values", datatitle, zname);
+			break;
+		case FIT:
+			sprintf_s (maptitle, 250, "%s - Degree %d Fit of %s Values",
 	                                      datatitle, fit_degree, zname);
-	    break;
- 	case RESID:
-	    sprintf (maptitle, "%s - Degree %d Fit Residual of %s Values",
+			break;
+ 		case RESID:
+			sprintf_s (maptitle, 250, "%s - Degree %d Fit Residual of %s Values",
 	                                      datatitle, fit_degree, zname);
-	    break;
+			break;
     }
 
 
@@ -122,10 +122,10 @@ void main (int argc, char *argv[])
 /*	x and y values are longitude and latitude, respectively		*/
 
     {
-	double center_latitude = (ymin + ymax) / 2;
-	double cos_cent;
+		double center_latitude = (ymin + ymax) / 2;
+		double cos_cent;
         double degrees_per_radian = M_PI / 180.;
-	double s, t;
+		double s, t;
         long ratio;
 
         opt_scale (&ratio);
@@ -133,7 +133,7 @@ void main (int argc, char *argv[])
         cos_cent = cos (center_latitude * degrees_per_radian);
         t = 1 - cos_cent * cos_cent * 0.006693422;
         s = (cos_cent * 2.5026656e+8) / sqrt (t);
-	hscale = ratio / (s * degrees_per_radian);
+		hscale = ratio / (s * degrees_per_radian);
         t = (6.305541e+16 - 0.006693422 * s * s);
         t = t * sqrt (t) / 6.284403e+16;
         vscale = ratio / (t * degrees_per_radian);
@@ -146,10 +146,10 @@ void main (int argc, char *argv[])
         }
 
         {				/* must also switch sign on	*/
-	    double hold = xmin;		/* xmin and xmax		*/
-	    xmin = - xmax / hscale;
+			double hold = xmin;		/* xmin and xmax		*/
+			xmin = - xmax / hscale;
             xmax = - hold / hscale;
-	}
+		}
 
         ymin = ymin / vscale;
         ymax = ymax / vscale;
@@ -174,11 +174,11 @@ void main (int argc, char *argv[])
         for (k = 0; k < nrow; k++)
 	    write_panel (maptitle, data_type,
 	                 npoint, code, 
-			 x, y, z, 
-			 fit, resid,
-			 hscale, vscale,
-			 xmin, xmax, ymin, ymax,
-			 zdigits,
+					 x, y, z, 
+					 fit, resid,
+					 hscale, vscale,
+					 xmin, xmax, ymin, ymax,
+					 zdigits,
 	                 j, ncol, k, nrow);
     }
 
@@ -189,11 +189,11 @@ void main (int argc, char *argv[])
 
 static void write_panel (char *maptitle, DATATYPE data_type,
                          int npoint, unsigned long *code,
-			 float *x_inch, float *y_inch, float *zval,
-			 float *fit, float *resid,
-			 double hscale, double vscale,
-			 double xmin, double xmax, double ymin, double ymax,
-			 int zdigits,
+						 double *x_inch, double *y_inch, double *zval,
+						 double *fit, double *resid,
+						 double hscale, double vscale,
+						 double xmin, double xmax, double ymin, double ymax,
+						 int zdigits,
                          int col, int ncol, int row, int nrow)
 {
     int i;
@@ -221,16 +221,16 @@ static void write_panel (char *maptitle, DATATYPE data_type,
 
     if (col > 0)
         printf ("(%s  panel %c-%d   attach panel %c-%d here) attachleft\n", 
-	 maptitle, column_label[col], row + 1, column_label[col - 1], row + 1);
+			 maptitle, column_label[col], row + 1, column_label[col - 1], row + 1);
     if (row > 0)
         printf ("(%s  panel %c-%d   attach panel %c-%d here) attachtop\n",
 	         maptitle, column_label[col], row + 1, column_label[col], row);
     if (col < ncol - 1)
         printf ("(%s  panel %c-%d   attach panel %c-%d here) attachright\n",
-	  maptitle, column_label[col], row + 1, column_label[col + 1], row + 1);
+			maptitle, column_label[col], row + 1, column_label[col + 1], row + 1);
     if (row < nrow - 1)
         printf ("(%s  panel %c-%d   attach panel %c-%d here) attachbottom\n",
-	      maptitle, column_label[col], row + 1, column_label[col], row + 2);
+			maptitle, column_label[col], row + 1, column_label[col], row + 2);
 
 /*	draw the map border	*/
 
@@ -248,8 +248,8 @@ static void write_panel (char *maptitle, DATATYPE data_type,
         printf ("/Helvetica findfont\n");
         printf ("18 scalefont setfont\n");
 
-	printf ("%g inch 9.9 inch moveto\n", (xmin + xmax) / 2 - xleft);
-	printf ("(%s) centeredshow\n", maptitle);
+		printf ("%g inch 9.9 inch moveto\n", (xmin + xmax) / 2 - xleft);
+		printf ("(%s) centeredshow\n", maptitle);
     }
 
 /*	add labels and lines from the options file	*/
@@ -261,16 +261,16 @@ static void write_panel (char *maptitle, DATATYPE data_type,
 
     {
         char *labelfont;
-	int labelsize;
-	int labelrotate;
+		int labelsize;
+		int labelrotate;
 
         opt_post (&labelfont, &labelsize, &labelrotate);
 
         printf ("/%s findfont\n", labelfont);
         printf ("%d scalefont setfont\n", labelsize);
-	printf ("/labelrotate %d def\n", labelrotate);
-	printf ("/labelxpos %d def\n", 3);
-	printf ("/labelypos %d def\n", -3);
+		printf ("/labelrotate %d def\n", labelrotate);
+		printf ("/labelxpos %d def\n", 3);
+		printf ("/labelypos %d def\n", -3);
     }
 
 /*	post the points		*/
@@ -279,27 +279,27 @@ static void write_panel (char *maptitle, DATATYPE data_type,
     {
         x = x_inch[i];
         if (x < xleft || x > xright)
-	    continue;
-	y = y_inch[i];
-	if (y < ybot || y > ytop)
-	    continue;
-	printf ("%g inch %g inch moveto ", x - xleft, y - ybot);
-	switch (data_type)
-	{
-	    case CODE:
-	        printf ("(%ld)", code[i]);
-		break;
-	    case OBS:
-	        printf ("(%.*f)", zdigits, zval[i]);
-		break;
-	    case FIT:
-	        printf ("(%.*f)", zdigits, fit[i]);
-		break;
-	    case RESID:
-	        printf ("(%.*f)", zdigits, resid[i]);
-		break;
-	}
-	printf (" postpoint\n");
+			continue;
+		y = y_inch[i];
+		if (y < ybot || y > ytop)
+			continue;
+		printf ("%g inch %g inch moveto ", x - xleft, y - ybot);
+		switch (data_type)
+		{
+			case CODE:
+				printf ("(%ld)", code[i]);
+				break;
+			case OBS:
+				printf ("(%.*f)", zdigits, zval[i]);
+				break;
+			case FIT:
+				printf ("(%.*f)", zdigits, fit[i]);
+				break;
+			case RESID:
+				printf ("(%.*f)", zdigits, resid[i]);
+				break;
+		}
+		printf (" postpoint\n");
     }
 
 /*	display the page	*/

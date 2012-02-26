@@ -15,4 +15,4 @@
 */
 
 int readdata (char *dataname, char **title,
-              unsigned long **code, float **x, float **y, float **z);
+              unsigned long **code, double **x, double **y, double **z);

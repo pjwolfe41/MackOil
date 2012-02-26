@@ -39,8 +39,8 @@ void powers (int degree, double xx, double yy, double *power)
     m = 1;
     for (n = 1; n <= degree; n++)
     {
-	for (k = 0; k < n; k++)
-	    power[m++] = power[j++] * xx;
-	power[m++] = power[j - 1] * yy;
+		for (k = 0; k < n; k++)
+			power[m++] = power[j++] * xx;
+		power[m++] = power[j - 1] * yy;
     }
 }

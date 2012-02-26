@@ -7,7 +7,6 @@
 #include "utility.h"
 #include "outopt.h"
 
-
 /*	prototype of local routines	*/
 
 static void read_output_opt (void);
@@ -184,17 +183,17 @@ void opt_maplabel (double hscale, double vscale, double xleft, double ybot)
     {
         double xx, yy;
 
-	printf ("gsave\n");
+		printf ("gsave\n");
         printf ("/%s findfont\n", maplabel.maplab[i].font);
-	printf ("%d scalefont setfont\n", maplabel.maplab[i].fontsize);
-	xx = - maplabel.maplab[i].xpos;
-	xx = xx / hscale - xleft;
-	yy = maplabel.maplab[i].ypos;
-	yy = yy / vscale - ybot;
-	printf ("%g inch %g inch moveto\n", xx, yy);
-	printf ("%d rotate\n", maplabel.maplab[i].rotate);
-	printf ("(%s) centeredshow\n", maplabel.maplab[i].label);
-	printf ("grestore\n");
+		printf ("%d scalefont setfont\n", maplabel.maplab[i].fontsize);
+		xx = - maplabel.maplab[i].xpos;
+		xx = xx / hscale - xleft;
+		yy = maplabel.maplab[i].ypos;
+		yy = yy / vscale - ybot;
+		printf ("%g inch %g inch moveto\n", xx, yy);
+		printf ("%d rotate\n", maplabel.maplab[i].rotate);
+		printf ("(%s) centeredshow\n", maplabel.maplab[i].label);
+		printf ("grestore\n");
     }
 }
 
@@ -213,24 +212,24 @@ void opt_mapline (double hscale, double vscale, double xleft, double ybot)
         int j;
 
         printf ("gsave\n");
-	printf ("%g setgray\n", mapline.maplin[i].intensity);
-	printf ("%d setlinewidth\n", mapline.maplin[i].width);
-	printf ("newpath\n");
-	for (j = 0; j < mapline.maplin[i].npoint; j++)
-	{
-	    double xx, yy;
+		printf ("%g setgray\n", mapline.maplin[i].intensity);
+		printf ("%d setlinewidth\n", mapline.maplin[i].width);
+		printf ("newpath\n");
+		for (j = 0; j < mapline.maplin[i].npoint; j++)
+		{
+			double xx, yy;
 
-	    xx = - mapline.maplin[i].x[j];
-	    xx = xx / hscale - xleft;
-	    yy = mapline.maplin[i].y[j];
-	    yy = yy / vscale - ybot;
-	    printf ("%g inch %g inch", xx, yy);
-	    if (j == 0)
-	        printf (" moveto\n");
-	    else
-	        printf (" lineto\n");
-	}
-	printf ("stroke\n");
+			xx = - mapline.maplin[i].x[j];
+			xx = xx / hscale - xleft;
+			yy = mapline.maplin[i].y[j];
+			yy = yy / vscale - ybot;
+			printf ("%g inch %g inch", xx, yy);
+			if (j == 0)
+				printf (" moveto\n");
+			else
+				printf (" lineto\n");
+		}
+		printf ("stroke\n");
         printf ("grestore\n");
     }
 }
@@ -240,8 +239,8 @@ void opt_mapline (double hscale, double vscale, double xleft, double ybot)
 **  for description.
 */
 
-int opt_select (unsigned long code, float x, float y, float z, 
-                int fit_computed, float fit, float resid)
+int opt_select (unsigned long code, double x, double y, double z, 
+                int fit_computed, double fit, double resid)
 {
     int i;
     int  select_point = 1;
@@ -251,89 +250,89 @@ int opt_select (unsigned long code, float x, float y, float z,
     for (i = 0; i < select.nspec; i++)
     {
         double data = 0;
-	double value; 
+		double value; 
 
         switch (select.condition[i].datatype)
-	{
-	    case CODE:
-	        data = code;
-		break;
-	    case OBS:
-	        data = z;
-		break;
-	    case X:
-	        data = x;
-		break;
-	    case Y:
-	        data = y;
-		break;
-	    case FIT:
-	        if (fit_computed == 0)
-		    continue;	/* skip condition */
-	        data = fit;
-		break;
-	    case RESID:
-	        if (fit_computed == 0)
-		    continue;	/* skip condition */
-	        data = resid;
-		break;
-	}
+		{
+			case CODE:
+				data = code;
+				break;
+			case OBS:
+				data = z;
+				break;
+			case X:
+				data = x;
+				break;
+			case Y:
+				data = y;
+				break;
+			case FIT:
+				if (fit_computed == 0)
+					continue;	/* skip condition */
+				data = fit;
+				break;
+			case RESID:
+				if (fit_computed == 0)
+					continue;	/* skip condition */
+				data = resid;
+				break;
+		}
 
 #define  EPS .000001
-	value = select.condition[i].value;
-	switch (select.condition[i].logop)
-	{
-	    case LT:
-	        if (data >= value)
-		    select_point = 0;
-	        break;
-	    case LE:
-	        if (data > value)
-		    select_point = 0;
-	        break;
-	    case EQ:
-	        if (data == 0)
+		value = select.condition[i].value;
+		switch (select.condition[i].logop)
 		{
-		    if (fabs (value) > EPS)
-		        select_point = 0;
+			case LT:
+				if (data >= value)
+					select_point = 0;
+				break;
+			case LE:
+				if (data > value)
+					select_point = 0;
+				break;
+			case EQ:
+				if (data == 0)
+				{
+					if (fabs (value) > EPS)
+						select_point = 0;
+				}
+				else
+				{
+					if (fabs ((data - value) / data) > EPS)
+						select_point = 0;
+				}
+				break;
+			case NE:
+				if (data == 0)
+				{
+					if (fabs (value) < EPS)
+						select_point = 0;
+				}
+				else
+				{
+					if (fabs ((data - value) / data) < EPS)
+						select_point = 0;
+				}
+				break;
+			 case GT:
+				if (data <= value)
+					select_point = 0;
+				 break;
+			 case GE:
+				if (data < value)
+					select_point = 0;
+				break;
 		}
-		else
+		if (select.condition[i].or_next)
 		{
-		    if (fabs ((data - value) / data) > EPS)
-		        select_point = 0;
+			if (select_point)
+				++i;			/* skip OR clause */
+			else
+				select_point = 1;	/* retry with OR clause */
 		}
-	        break;
-	    case NE:
-	        if (data == 0)
-		{
-		    if (fabs (value) < EPS)
-		        select_point = 0;
-		}
-		else
-		{
-		    if (fabs ((data - value) / data) < EPS)
-		        select_point = 0;
-		}
-	        break;
-	    case GT:
-	        if (data <= value)
-		    select_point = 0;
-	        break;
-	    case GE:
-	        if (data < value)
-		    select_point = 0;
-	        break;
+		if (! select_point)
+			break;
 	}
-	if (select.condition[i].or_next)
-	{
-	    if (select_point)
-	        ++i;			/* skip OR clause */
-	    else
-	        select_point = 1;	/* retry with OR clause */
-	}
-	if (! select_point)
-	    break;
-    }
 
     return (select_point);
 }
@@ -364,300 +363,300 @@ static void read_output_opt (void)
 
     while (1)
     {
-	char **field;
+		char **field;
         int nspec;
 	
-	nspec = nextspecs (&field);
-	if (! nspec) 
-	    break;
+		nspec = nextspecs (&field);
+		if (! nspec) 
+			break;
 
-	if (stricmp (field[0], "zvalue") == 0)
-	{
-	    if (zvalue.spec_found)
-	        error_stop (field[0],
+		if (_stricmp (field[0], "zvalue") == 0)
+		{
+			if (zvalue.spec_found)
+				error_stop (field[0],
 		                "specified more than once in file output.opt");
-	    if (nspec != 3)
-	        error_stop (field[0], 
+			if (nspec != 3)
+				error_stop (field[0], 
 		           "has the wrong number of fields in file output.opt");
-	    zvalue.spec_found = 1;
-	    zvalue.zname = field[1];
-	    zvalue.digits = atoi (field[2]);
-	    if (not_int (field[2]) || zvalue.digits < 0 || zvalue.digits > 10)
-	        error_stop ("invalid digits field in output.opt ZVALUE:",
+			zvalue.spec_found = 1;
+			zvalue.zname = field[1];
+			zvalue.digits = atoi (field[2]);
+			if (not_int (field[2]) || zvalue.digits < 0 || zvalue.digits > 10)
+				error_stop ("invalid digits field in output.opt ZVALUE:",
 		                                                      field[2]);
-	}
-	else if (stricmp (field[0], "scale") == 0)
-	{
-	    if (scale.spec_found)
-	        error_stop (field[0],
+		}
+		else if (_stricmp (field[0], "scale") == 0)
+		{
+			if (scale.spec_found)
+				error_stop (field[0],
 		                "specified more than once in file output.opt");
-	    if (nspec != 2)
-	        error_stop (field[0], 
+			if (nspec != 2)
+				error_stop (field[0], 
 		          "has the wrong number of fields in file output.opt");
-	    scale.spec_found = 1;
-	    scale.ratio = atol (field[1]);
-	    if (not_int (field[1]) || scale.ratio < 1 || scale.ratio > 1000000)
-	        error_stop ("invalid ratio field in output.opt SCALE:",
+			scale.spec_found = 1;
+			scale.ratio = atol (field[1]);
+			if (not_int (field[1]) || scale.ratio < 1 || scale.ratio > 1000000)
+				error_stop ("invalid ratio field in output.opt SCALE:",
 		                                                      field[1]);
-	}
-	else if (stricmp (field[0], "post") == 0)
-	{
-	    if (post.spec_found)
-	        error_stop (field[0],
+		}
+		else if (_stricmp (field[0], "post") == 0)
+		{
+			if (post.spec_found)
+				error_stop (field[0],
 		                "specified more than once in file output.opt");
-	    if (nspec != 4)
-	        error_stop (field[0], 
+			if (nspec != 4)
+				error_stop (field[0], 
 		          "has the wrong number of fields in file output.opt");
-	    post.spec_found = 1;
-	    post.labelfont = field[1];
-	    post.labelsize = atoi (field[2]);
-	    if (not_int (field[2]) || post.labelsize < 1 ||
+			post.spec_found = 1;
+			post.labelfont = field[1];
+			post.labelsize = atoi (field[2]);
+			if (not_int (field[2]) || post.labelsize < 1 ||
 	                                                  post.labelsize > 100)
-	        error_stop ("invalid labelsize field in output.opt POST:",
+				error_stop ("invalid labelsize field in output.opt POST:",
 		                                                      field[2]);
-	    post.labelrotate = atoi (field[3]);
-	    if (not_int (field[3]))
-	        error_stop ("invalid labelrotate field in output.opt POST:",
+			post.labelrotate = atoi (field[3]);
+			if (not_int (field[3]))
+				error_stop ("invalid labelrotate field in output.opt POST:",
 								      field[3]);
-	}
-	else if (stricmp (field[0], "contour") == 0)
-	{
-	    if (contour.spec_found)
-	        error_stop (field[0],
+		}
+		else if (_stricmp (field[0], "contour") == 0)
+		{
+			if (contour.spec_found)
+				error_stop (field[0],
 		                "specified more than once in file output.opt");
-	    if (nspec < 6)
-	        error_stop (field[0], 
+			if (nspec < 6)
+				error_stop (field[0], 
 		          "has the wrong number of fields in file output.opt");
-	    contour.spec_found = 1;
-	    contour.meshsize = atof (field[1]);
-	    if (not_float (field[1]) || contour.meshsize <= 0)
-	        error_stop ("invalid meshsize field in output.opt CONTOUR:", 
+			contour.spec_found = 1;
+			contour.meshsize = atof (field[1]);
+			if (not_float (field[1]) || contour.meshsize <= 0)
+				error_stop ("invalid meshsize field in output.opt CONTOUR:", 
 		                                                      field[1]);
-	    contour.gridmethod = atoi (field[2]);
-	    if (not_int (field[2]) || contour.gridmethod < 1 ||
+			contour.gridmethod = atoi (field[2]);
+			if (not_int (field[2]) || contour.gridmethod < 1 ||
 	                                                contour.gridmethod > 20)
-	        error_stop ("invalid gridmethod field in output.opt CONTOUR:", 
+				error_stop ("invalid gridmethod field in output.opt CONTOUR:", 
 		                                                      field[2]);
-	    if (stricmp (field[3], "SIZE") == 0)
-	    {
-	        contour.intervalsize = atof (field[4]);
-		contour.numberoflevels = 0;
-	        if (not_float (field[4]) || contour.intervalsize <= 0)
-	            error_stop (
-		           "invalid intervalsize field in output.opt CONTOUR:", 
+			if (_stricmp (field[3], "SIZE") == 0)
+			{
+				contour.intervalsize = atof (field[4]);
+				contour.numberoflevels = 0;
+				if (not_float (field[4]) || contour.intervalsize <= 0)
+					error_stop (
+						"invalid intervalsize field in output.opt CONTOUR:", 
 		                                                      field[4]);
-	    }
-	    else if (stricmp (field[3], "LEVELS") == 0)
-	    {
-	        contour.intervalsize = 0;
-		contour.numberoflevels = atoi (field[4]);
-	        if (not_int (field[4]) || contour.numberoflevels <= 0)
-	            error_stop (
-		        "invalid numberoflevels field in output.opt CONTOUR:", 
+			}
+			else if (_stricmp (field[3], "LEVELS") == 0)
+			{
+				contour.intervalsize = 0;
+				contour.numberoflevels = atoi (field[4]);
+				if (not_int (field[4]) || contour.numberoflevels <= 0)
+					error_stop (
+						"invalid numberoflevels field in output.opt CONTOUR:", 
 		                                                      field[4]);
-	    }
-	    else
-	        error_stop (
-		   "intervalspec is not SIZE or LEVELS in output.opt CONTOUR:",
+			}
+			else
+				error_stop (
+					"intervalspec is not SIZE or LEVELS in output.opt CONTOUR:",
 		                                                     field[3]);
 
-	    if (stricmp (field[5], "LINEAR") == 0)
-	    {
-	        contour.smoothmethod = 'L';
-	        if (nspec != 6)
-	            error_stop (field[0], 
-		          "has the wrong number of fields in file output.opt");
-	        contour.approx_pts = 0;
-		contour.bs_order = 0;
-	    }
-	    else if (stricmp (field[5], "CUBIC_SPLINE") == 0)
-	    {
-	        contour.smoothmethod = 'C';
-	        if (nspec != 7)
-	            error_stop (field[0], 
-		          "has the wrong number of fields in file output.opt");
-	        contour.approx_pts = atoi (field[6]);
-	        if (not_int (field[6]) || contour.approx_pts < 4 || 
+			if (_stricmp (field[5], "LINEAR") == 0)
+			{
+				contour.smoothmethod = 'L';
+				if (nspec != 6)
+					error_stop (field[0], 
+						"has the wrong number of fields in file output.opt");
+				contour.approx_pts = 0;
+				contour.bs_order = 0;
+			}
+			else if (_stricmp (field[5], "CUBIC_SPLINE") == 0)
+			{
+				contour.smoothmethod = 'C';
+				if (nspec != 7)
+					error_stop (field[0], 
+						"has the wrong number of fields in file output.opt");
+				contour.approx_pts = atoi (field[6]);
+				if (not_int (field[6]) || contour.approx_pts < 4 || 
 		                                        contour.approx_pts > 20)
-	            error_stop ("invalid npoints field in output.opt CONTOUR:",
+					error_stop ("invalid npoints field in output.opt CONTOUR:",
 		                                                      field[6]);
-		contour.bs_order = 0;
-	    }
-	    else if (stricmp (field[5], "BSPLINE") == 0)
-	    {
-	        contour.smoothmethod = 'B';
-	        if (nspec != 8)
-	            error_stop (field[0], 
-		          "has the wrong number of fields in file output.opt");
-		contour.bs_order = atoi (field[6]);
-	        if (not_int (field[6]) || contour.bs_order < 2 ||
+				contour.bs_order = 0;
+			}
+			else if (_stricmp (field[5], "BSPLINE") == 0)
+			{
+				contour.smoothmethod = 'B';
+				if (nspec != 8)
+					error_stop (field[0], 
+						"has the wrong number of fields in file output.opt");
+				contour.bs_order = atoi (field[6]);
+				if (not_int (field[6]) || contour.bs_order < 2 ||
 		                                         contour.bs_order > 10)
-	            error_stop (
-		         "invalid bspline order field in output.opt CONTOUR:",
+					error_stop (
+						"invalid bspline order field in output.opt CONTOUR:",
 		                                                      field[6]);
-	        contour.approx_pts = atoi (field[7]);
-	        if (not_int (field[7]) || contour.approx_pts < 4 || 
+				contour.approx_pts = atoi (field[7]);
+				if (not_int (field[7]) || contour.approx_pts < 4 || 
 		                                        contour.approx_pts > 20)
-	            error_stop ("invalid npoints field in output.opt CONTOUR:",
+					error_stop ("invalid npoints field in output.opt CONTOUR:",
 		                                                      field[7]);
-	    }
-	    else
-	        error_stop ("invalid smoothmethod in output.opt CONTOUR:", 
+			}
+			else
+				error_stop ("invalid smoothmethod in output.opt CONTOUR:", 
 		                                                     field[5]);
-	}
-	else if (stricmp (field[0], "maplabel") == 0)
-	{
-	    MAPLABEL *ml;
+		}
+		else if (_stricmp (field[0], "maplabel") == 0)
+		{
+			MAPLABEL *ml;
 
-	    ++maplabel.nspec; 
-	    maplabel.maplab = (MAPLABEL *) realloc (maplabel.maplab, 
+			++maplabel.nspec; 
+			maplabel.maplab = (MAPLABEL *) realloc (maplabel.maplab, 
 	                        (unsigned) maplabel.nspec * sizeof (MAPLABEL));
-	    if (maplabel.maplab == NULL)
-	        error_stop ("cannot reallocate MAPLABEL space", "");
-	    ml = maplabel.maplab + maplabel.nspec - 1;
-	    if (nspec != 7)
-	        error_stop (field[0], 
-		          "has the wrong number of fields in file output.opt");
-	    ml->label = field[1];
-	    ml->xpos = atof (field[2]);
-	    if (not_float (field[2]))
-	        error_stop ("invalid xpos field in output.opt MAPLABEL:", 
+			if (maplabel.maplab == NULL)
+				error_stop ("cannot reallocate MAPLABEL space", "");
+			ml = maplabel.maplab + maplabel.nspec - 1;
+			if (nspec != 7)
+				error_stop (field[0], 
+						"has the wrong number of fields in file output.opt");
+			ml->label = field[1];
+			ml->xpos = atof (field[2]);
+			if (not_float (field[2]))
+				error_stop ("invalid xpos field in output.opt MAPLABEL:", 
 		                                                      field[2]);
-	    ml->ypos = atof (field[3]);
-	    if (not_float (field[3]))
-	        error_stop ("invalid ypos field in output.opt MAPLABEL:", 
+			ml->ypos = atof (field[3]);
+			if (not_float (field[3]))
+				error_stop ("invalid ypos field in output.opt MAPLABEL:", 
 		                                                      field[3]);
-	    ml->font = field[4];
-	    ml->fontsize = atoi (field[5]);
-	    if (not_int (field[5]) || ml->fontsize < 1 || ml->fontsize > 100)
-	        error_stop ("invalid fontsize field in output.opt MAPLABEL:",
+			ml->font = field[4];
+			ml->fontsize = atoi (field[5]);
+			if (not_int (field[5]) || ml->fontsize < 1 || ml->fontsize > 100)
+				error_stop ("invalid fontsize field in output.opt MAPLABEL:",
 		                                                      field[5]);
-	    ml->rotate = atoi (field[6]);
-	    if (not_int (field[6]))
-	        error_stop ("invalid rotate field in output.opt MAPLABEL:",
+			ml->rotate = atoi (field[6]);
+			if (not_int (field[6]))
+				error_stop ("invalid rotate field in output.opt MAPLABEL:",
 		                                                      field[6]);
-	}
-	else if (stricmp (field[0], "mapline") == 0)
-	{
-	    int i, k;
-	    MAPLINE *ml;
+		}
+		else if (_stricmp (field[0], "mapline") == 0)
+		{
+			int i, k;
+			MAPLINE *ml;
 
-	    ++mapline.nspec; 
-	    mapline.maplin = (MAPLINE *) realloc (mapline.maplin, 
-	                        (unsigned) mapline.nspec * sizeof (MAPLINE));
-	    if (mapline.maplin == NULL)
-	        error_stop ("cannot reallocate MAPLINE space", "");
-	    ml = mapline.maplin + mapline.nspec - 1;
-	    if (nspec < 3)
-	        error_stop (field[0], 
-		          "has the wrong number of fields in file output.opt");
-	    ml->width = atoi (field[1]);
-	    if (not_int (field[1]) || ml->width < 1 || ml->width > 100)
-	        error_stop ("invalid width field in output.opt MAPLINE:",
+			++mapline.nspec; 
+			mapline.maplin = (MAPLINE *) realloc (mapline.maplin, 
+								(unsigned) mapline.nspec * sizeof (MAPLINE));
+			if (mapline.maplin == NULL)
+				error_stop ("cannot reallocate MAPLINE space", "");
+			ml = mapline.maplin + mapline.nspec - 1;
+			if (nspec < 3)
+				error_stop (field[0], 
+					"has the wrong number of fields in file output.opt");
+			ml->width = atoi (field[1]);
+			if (not_int (field[1]) || ml->width < 1 || ml->width > 100)
+					error_stop ("invalid width field in output.opt MAPLINE:",
 		                                                      field[1]);
-	    ml->intensity = atof (field[2]);
-	    if (not_float (field[2]))
-	        error_stop ("invalid intensity field in output.opt MAPLINE:",
+			ml->intensity = atof (field[2]);
+			if (not_float (field[2]))
+				error_stop ("invalid intensity field in output.opt MAPLINE:",
 		                                                      field[2]);
-	    ml->npoint = (nspec - 3) / 2;
-	    if (ml->npoint < 2 || ml->npoint * 2 + 3 != nspec)
-	        error_stop ("invalid coordinate pairs in output.opt MAPLINE",
+			ml->npoint = (nspec - 3) / 2;
+			if (ml->npoint < 2 || ml->npoint * 2 + 3 != nspec)
+				error_stop ("invalid coordinate pairs in output.opt MAPLINE",
 		                                                            "");
-	    ml->x = (double *) malloc ((unsigned) ml->npoint * sizeof (double));
-	    ml->y = (double *) malloc ((unsigned) ml->npoint * sizeof (double));
-	    if (ml->x == NULL || ml->y == NULL)
-	        error_stop ("cannot allocate space for MAPLINE coordinates","");
-	    k = 3;
-	    for (i = 0; i < ml->npoint; i++)
-	    {
-	        ml->x[i] = atof (field[k++]);
-	        ml->y[i] = atof (field[k++]);
-	    }
-	}
-	else if (stricmp (field[0], "select") == 0)
-	{
-	    SELECT *sel;
-	    int nclause = 0;
-	    int k = 0;
+			ml->x = (double *) malloc ((unsigned) ml->npoint * sizeof (double));
+			ml->y = (double *) malloc ((unsigned) ml->npoint * sizeof (double));
+			if (ml->x == NULL || ml->y == NULL)
+				error_stop ("cannot allocate space for MAPLINE coordinates","");
+			k = 3;
+			for (i = 0; i < ml->npoint; i++)
+			{
+				ml->x[i] = atof (field[k++]);
+				ml->y[i] = atof (field[k++]);
+			}
+		}
+		else if (_stricmp (field[0], "select") == 0)
+		{
+			SELECT *sel;
+			int nclause = 0;
+			int k = 0;
 
-	    if (nspec == 4)
-	        nclause = 1;
-	    else if (nspec == 8)
-	        nclause = 2;
-	    else
-	        error_stop (field[0], 
+			if (nspec == 4)
+				nclause = 1;
+			else if (nspec == 8)
+				nclause = 2;
+			else
+				error_stop (field[0], 
 		                "has the wrong number of fields in output.opt");
 	
-	    while (nclause--)
-	    {
-	        ++select.nspec; 
-	        select.condition = (SELECT *) realloc (select.condition, 
+			while (nclause--)
+			{
+				++select.nspec; 
+				select.condition = (SELECT *) realloc (select.condition, 
 	                           (unsigned) select.nspec * sizeof (SELECT));
-	        if (select.condition == NULL)
-	            error_stop ("cannot reallocate SELECT space", "");
-	        sel = select.condition + select.nspec - 1;
-		++k;
-	        {
-	            DATATYPE dt;
-			dt = CODE;
-		    if (stricmp (field[k], "code") == 0)
-		        dt = CODE;
-		    else if (stricmp (field[k], "obs") == 0)
-		        dt = OBS;
-		    else if (stricmp (field[k], "x") == 0)
-		        dt = X;
-		    else if (stricmp (field[k], "y") == 0)
-		        dt = Y;
-		    else if (stricmp (field[k], "fit") == 0)
-		        dt = FIT;
-		    else if (stricmp (field[k], "resid") == 0)
-		        dt = RESID;
-	            else
-		        error_stop ("invalid datatype in output.opt SELECT:",
+				if (select.condition == NULL)
+					error_stop ("cannot reallocate SELECT space", "");
+				sel = select.condition + select.nspec - 1;
+				++k;
+				{
+					DATATYPE dt;
+					dt = CODE;
+					if (_stricmp (field[k], "code") == 0)
+						dt = CODE;
+					else if (_stricmp (field[k], "obs") == 0)
+						dt = OBS;
+					else if (_stricmp (field[k], "x") == 0)
+						dt = X;
+					else if (_stricmp (field[k], "y") == 0)
+						dt = Y;
+					else if (_stricmp (field[k], "fit") == 0)
+						dt = FIT;
+					else if (_stricmp (field[k], "resid") == 0)
+						dt = RESID;
+					else
+						error_stop ("invalid datatype in output.opt SELECT:",
 								     field[k]);
-	            sel->datatype = dt;
-	        }
-		++k;
-	        {
-	            LOG_OPERATOR op;
+					sel->datatype = dt;
+				}
+				++k;
+				{
+					LOG_OPERATOR op;
 
-			op = LT;
-		    if (stricmp (field[k], "<") == 0)
-		        op = LT;
-		    else if (stricmp (field[k], "<=") == 0)
-		        op = LE;
-		    else if (stricmp (field[k], "=") == 0)
-		        op = EQ;
-		    else if (stricmp (field[k], "!=") == 0)
-		        op = NE;
-		    else if (stricmp (field[k], ">") == 0)
-		        op = GT;
-		    else if (stricmp (field[k], ">=") == 0)
-		        op = GE;
-	            else
-		        error_stop ("invalid operator in output.opt SELECT:",
+					op = LT;
+					if (_stricmp (field[k], "<") == 0)
+						op = LT;
+					else if (_stricmp (field[k], "<=") == 0)
+						op = LE;
+					else if (_stricmp (field[k], "=") == 0)
+						op = EQ;
+					else if (_stricmp (field[k], "!=") == 0)
+						op = NE;
+					else if (_stricmp (field[k], ">") == 0)
+						op = GT;
+					else if (_stricmp (field[k], ">=") == 0)
+						op = GE;
+					else
+						error_stop ("invalid operator in output.opt SELECT:",
 								     field[k]);
-	            sel->logop = op;
-	        }
-		++k;
-	        sel->value = atof (field[k]);
-	        if (not_float (field[k]))
-	            error_stop ("invalid value field in output.opt SELECT:",
+					sel->logop = op;
+				}
+				++k;
+				sel->value = atof (field[k]);
+				if (not_float (field[k]))
+					error_stop ("invalid value field in output.opt SELECT:",
 		                                                      field[k]);
-	        sel->or_next = nclause;
-		if (nclause)
-		{
-		    ++k;
-		    if (stricmp (field[k], "OR") != 0)
-		        error_stop ("OR not found in output.opt SELECT:",
+				sel->or_next = nclause;
+				if (nclause)
+				{
+					++k;
+					if (_stricmp (field[k], "OR") != 0)
+						error_stop ("OR not found in output.opt SELECT:",
 		                                                      field[k]);
+				}
+			}
 		}
-	    }
-	}
-	else
-	    error_stop ("unknown output.opt type:", field[0]);
+		else
+			error_stop ("unknown output.opt type:", field[0]);
 
-    }
+	}
 
     alldone = 1;
 }
@@ -688,13 +687,13 @@ static int nextspecs (char ***field)
 
     if (fp == NULL)
     {
-        fp = fopen ("output.opt", "r");
+		fopen_s(&fp, "output.opt", "r"); 
         if (fp == NULL)
-	    error_stop ("cannot open file", "output.opt");
-	fld_size = 100;
+			error_stop ("cannot open file", "output.opt");
+		fld_size = 100;
         fld = (char **) malloc ((unsigned) fld_size * sizeof (char *));
-	if (fld == NULL)
-	    error_stop ("cannot allocate vector fld", "for output.opt specs");
+		if (fld == NULL)
+			error_stop ("cannot allocate vector fld", "for output.opt specs");
     }
 
 /*	get specs from the next non-blank line	*/
@@ -712,12 +711,12 @@ static int nextspecs (char ***field)
 
 	line = fgets (buf, 200, fp);
 	++line_number;
-	sprintf (cur_line, "line %d of file output.opt", line_number);
+	sprintf_s (cur_line, sizeof(cur_line), "line %d of file output.opt", line_number);
 	if (line == NULL)
 	{
 	    eof = 1;
 	    break;
-        }
+	}
 
     /*	    find the fields on the line     */
 	
@@ -728,18 +727,18 @@ static int nextspecs (char ***field)
 	    if (*line == '"')
 	    {
 	        if (cur_fld_len > 0)
-		    error_stop ("embedded quote on", cur_line);
+				error_stop ("embedded quote on", cur_line);
 	        while (++line)
-		{
-		    if (*line == '\0' || *line == '\n')
-		        error_stop ("missing quote on", cur_line);
-		    if (*line == '"')
-		    {
-		        *line = ' ';
-			break;
-		    }
-		    ++cur_fld_len;
-		}
+			{
+				if (*line == '\0' || *line == '\n')
+					error_stop ("missing quote on", cur_line);
+				if (*line == '"')
+				{
+					*line = ' ';
+					break;
+				}
+				++cur_fld_len;
+			}
 	    }
 
 	    if ((*line == '/' && *(line + 1) == '/') || *line == '\n')
@@ -748,15 +747,15 @@ static int nextspecs (char ***field)
 	    if (*line == '+' && *(line + 1) == '+')
 	    {
 	        eol_found = 1;
-		line_continued = 1;
+			line_continued = 1;
 		{
 		    char *p = line + 2;
 		    while (*p && *p != '\n')
 		    {
-			if (*p == '/' && *(p + 1) == '/') 
-			    break;
+				if (*p == '/' && *(p + 1) == '/') 
+					break;
 		        if (*p != ' ' && *p != '\t')
-			    error_stop ("characters after ++ on", cur_line);
+					error_stop ("characters after ++ on", cur_line);
 		        ++p;
 		    }
 		}
@@ -765,24 +764,24 @@ static int nextspecs (char ***field)
 	    if (*line == ' ' || *line == '\t' || eol_found)
 	    {
 	        if (cur_fld_len > 0)
-		{
-		    if (nfield == fld_size)
-		    {
-		        fld_size += 100;
-		        fld = (char **) realloc (fld, (unsigned) fld_size *
+			{
+				if (nfield == fld_size)
+				{
+					fld_size += 100;
+					fld = (char **) realloc (fld, (unsigned) fld_size *
 			                                      sizeof (char *));
-		        if (fld == NULL)
-			    error_stop ("cannot reallocate vector fld on",
+					if (fld == NULL)
+						error_stop ("cannot reallocate vector fld on",
 			                                             cur_line);
-		    }
-		    fld[nfield] = (char *) malloc ((unsigned) cur_fld_len + 1);
-		    if (fld[nfield] == NULL)
-		        error_stop ("cannot allocate space for option spec on",
+				}
+				fld[nfield] = (char *) malloc ((unsigned) cur_fld_len + 1);
+				if (fld[nfield] == NULL)
+					error_stop ("cannot allocate space for option spec on",
 			                                              cur_line);
-		    *line = '\0';
-		    strcpy (fld[nfield++], line - cur_fld_len);
-		    cur_fld_len = 0;
-		}
+				*line = '\0';
+				strcpy(fld[nfield++], line - cur_fld_len);
+				cur_fld_len = 0;
+			}
 	    }
 	    else
 	        ++cur_fld_len;
@@ -818,8 +817,8 @@ static int not_int (char *field)
         ++p;
     while (*p)
     {
-	if (! isdigit (*p++))
-	    return (1);
+		if (! isdigit (*p++))
+			return (1);
     }
     return (0);
 }
@@ -837,14 +836,14 @@ static int not_float (char *field)
         ++p;
     while (*p)
     {
-	if (*p == '.')
-	{
-	    if (ndec)
-	        return (1);
-	    ndec = 1;
-	}
-	else if (! isdigit (*p))
-	    return (1);
+		if (*p == '.')
+		{
+			if (ndec)
+				return (1);
+			ndec = 1;
+		}
+		else if (! isdigit (*p))
+			return (1);
         ++p;
     }
     return (0);
