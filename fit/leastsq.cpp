@@ -25,7 +25,7 @@ void leastsq (char *data_name, int max_degree)
 
     int npoint;			/* number of data points */
     char *title;		/* data title */
-    float *x, *y, *z;		/* x, y, and z data arrays */
+    double *x, *y, *z;		/* x, y, and z data arrays */
     unsigned long *code;	/* station code array */
 
     double xsub, xmul, ysub, ymul;	/* normalization values */
@@ -76,10 +76,11 @@ void leastsq (char *data_name, int max_degree)
 
     {
         time_t td;
+		char ctime_buf[100];
 
-	td = time (NULL);
-        printf ("Least Squares Surface Fit   %s    %s\n", data_name,
-	                                                           ctime (&td));
+		td = time (NULL);
+		ctime_s(ctime_buf, 100, &td);
+        printf ("Least Squares Surface Fit   %s    %s\n", data_name, ctime_buf);
     }
 
 /*	initialize fit degrees array	*/
@@ -131,8 +132,8 @@ void leastsq (char *data_name, int max_degree)
     for (i = 0; i < npoint; i++)
     {
 	fprintf (stderr, "station %ld\r", code[i]); 
-	x[i] = (float) ((x[i] - xsub) * xmul);
-	y[i] = (float) ((y[i] - ysub) * ymul);
+	x[i] = (double) ((x[i] - xsub) * xmul);
+	y[i] = (double) ((y[i] - ysub) * ymul);
 	powers (2 * max_degree, (double) x[i], (double) y[i], power);
 	for (j = 0; j < term_cnt; j++)
 	    csum[j] += z[i] * power[j];
@@ -239,39 +240,39 @@ void leastsq (char *data_name, int max_degree)
     fprintf (stderr, "save fit coefficients\n");
     {
         char filename[20];
-	FILE *fp;
+		FILE *fp;
 
-	strcpy (filename, data_name);
-	strcat (filename, ".fit");
-	fp = fopen (filename, "wb");
-	if (fp == NULL)
-	    error_stop ("cannot open file", filename);
+		strcpy_s (filename, sizeof(filename), data_name);
+		strcat_s (filename, sizeof(filename), ".fit");
+		fopen_s (&fp, filename, "wb");
+		if (fp == NULL)
+			error_stop ("cannot open file", filename);
 
-	if (fwrite ("fit ver 1.00", 12, 1, fp) != 1)
-	    error_stop ("error writing fit file:", "version header");
-	{
-	    long md = max_degree;   /* long for Watcom/Turbo compatability */
-	    if (fwrite (&md, sizeof (long), 1, fp) != 1)
-	        error_stop ("error writing fit file:", "max_degree");
-	}
-	if (fwrite (&xsub, sizeof (double), 1, fp) != 1)
-	    error_stop ("error writing fit file:", "xsub");
-	if (fwrite (&xmul, sizeof (double), 1, fp) != 1)
-	    error_stop ("error writing fit file:", "xmul");
-	if (fwrite (&ysub, sizeof (double), 1, fp) != 1)
-	    error_stop ("error writing fit file:", "ysub");
-	if (fwrite (&ymul, sizeof (double), 1, fp) != 1)
-	    error_stop ("error writing fit file:", "ymul");
-	n = 0;
-	for (i = 0; i < max_degree; i++)
-	{
-	    unsigned int nout = (unsigned) coef_cnt (mdeg[i]);
-	    if (fwrite (aaa + n, sizeof (double), nout, fp) != nout)
-	        error_stop ("error writing fit file:", "coefficient vector");
-	    n += term_cnt;
-	}
-	if (fclose (fp))
-	    error_stop ("cannot close file", filename);
+		if (fwrite ("fit ver 1.00", 12, 1, fp) != 1)
+			error_stop ("error writing fit file:", "version header");
+		{
+			long md = max_degree;   /* long for Watcom/Turbo compatability */
+			if (fwrite (&md, sizeof (long), 1, fp) != 1)
+				error_stop ("error writing fit file:", "max_degree");
+		}
+		if (fwrite (&xsub, sizeof (double), 1, fp) != 1)
+			error_stop ("error writing fit file:", "xsub");
+		if (fwrite (&xmul, sizeof (double), 1, fp) != 1)
+			error_stop ("error writing fit file:", "xmul");
+		if (fwrite (&ysub, sizeof (double), 1, fp) != 1)
+			error_stop ("error writing fit file:", "ysub");
+		if (fwrite (&ymul, sizeof (double), 1, fp) != 1)
+			error_stop ("error writing fit file:", "ymul");
+		n = 0;
+		for (i = 0; i < max_degree; i++)
+		{
+			unsigned int nout = (unsigned) coef_cnt (mdeg[i]);
+			if (fwrite (aaa + n, sizeof (double), nout, fp) != nout)
+				error_stop ("error writing fit file:", "coefficient vector");
+			 n += term_cnt;
+		}
+		if (fclose (fp))
+			error_stop ("cannot close file", filename);
     }
 
 /*	compute rms deviations	*/
@@ -279,37 +280,37 @@ void leastsq (char *data_name, int max_degree)
     fprintf (stderr, "compute rms deviations\n");
     {
         double *dev;
-	double fit, resid;
+		double fit, resid;
 
-	dev = (double *) calloc ((unsigned) max_degree, sizeof (double));
-	if (dev == NULL)
-	    error_stop ("cannot allocate space for array dev", "");
+		dev = (double *) calloc ((unsigned) max_degree, sizeof (double));
+		if (dev == NULL)
+			error_stop ("cannot allocate space for array dev", "");
 
         for (j = 0; j < max_degree; j++)
             dev[j] = 0;
 
         for (i = 0; i < npoint; i++)
         {
-	    fprintf (stderr, "station %ld\r", code[i]); 
-	    powers (max_degree, (double) x[i], (double) y[i], power);
-	    for (j = 0; j < max_degree; j++)
-	    {
-	        fit = 0;
-	        t = j * term_cnt;
-	        for (k = 0; k < coef_cnt (mdeg[j]); k++)
-		    fit += aaa[t++] * power[k];
-	        resid = z[i] - fit;
-	        dev[j] += resid * resid;
-	    }
+			fprintf (stderr, "station %ld\r", code[i]); 
+			powers (max_degree, (double) x[i], (double) y[i], power);
+			for (j = 0; j < max_degree; j++)
+			{
+				fit = 0;
+				t = j * term_cnt;
+				for (k = 0; k < coef_cnt (mdeg[j]); k++)
+					fit += aaa[t++] * power[k];
+				resid = z[i] - fit;
+				dev[j] += resid * resid;
+			}
         }
         printf ("\n\n             Root-mean-square deviations\n");
         printf ("\ndegree   deviation\n");
         for (i = 0; i < max_degree; i++)
-	    printf ("%4d %12.4f\n", mdeg[i], sqrt (dev[i] / npoint));
+			printf ("%4d %12.4f\n", mdeg[i], sqrt (dev[i] / npoint));
 
-	rms = sqrt (dev[0] / npoint);
+		rms = sqrt (dev[0] / npoint);
 
-	free (dev);
+		free (dev);
         fprintf (stderr, "\n");
     }
 
@@ -319,60 +320,60 @@ void leastsq (char *data_name, int max_degree)
     {
 #define  HISTSIZE 50
         int count[HISTSIZE];
-	double fit, resid;
-	double factor, interval, min_resid;
-	int  totcount;
+		double fit, resid;
+		double factor, interval, min_resid;
+		int  totcount;
 
-	factor = 1;
+		factor = 1;
         while (rms * factor < 1)
-	    factor *= 10;
-	while (rms * factor > 1)
-	    factor /= 10.;
-	factor *= 100;
-	interval = floor (factor * rms / 4); 
-	interval /= factor;
-	min_resid = - interval * HISTSIZE / 2; 
+			factor *= 10;
+		while (rms * factor > 1)
+			factor /= 10.;
+		factor *= 100;
+		interval = floor (factor * rms / 4); 
+		interval /= factor;
+		min_resid = - interval * HISTSIZE / 2; 
 
-	for (j = 0; j < HISTSIZE; j++)
-	    count[j] = 0;
+		for (j = 0; j < HISTSIZE; j++)
+			count[j] = 0;
 
-        for (i = 0; i < npoint; i++)
-        {
-	    fprintf (stderr, "station %ld\r", code[i]); 
-	    powers (max_degree, (double) x[i], (double) y[i], power);
-	    fit = 0;
-	    t = 0;
-	    for (k = 0; k < term_cnt; k++)
-	        fit += aaa[t++] * power[k];
-	    resid = z[i] - fit;
-	    n = (int) floor ((resid - min_resid) / interval);
-	    if (n < 0)
-	        n = 0;
-	    if (n >= HISTSIZE)
-	        n = HISTSIZE - 1;
-	    ++count[n];
-        }
+		for (i = 0; i < npoint; i++)
+		{
+			fprintf (stderr, "station %ld\r", code[i]); 
+			powers (max_degree, (double) x[i], (double) y[i], power);
+			fit = 0;
+			t = 0;
+			for (k = 0; k < term_cnt; k++)
+				fit += aaa[t++] * power[k];
+			resid = z[i] - fit;
+			n = (int) floor ((resid - min_resid) / interval);
+			if (n < 0)
+				n = 0;
+			if (n >= HISTSIZE)
+				n = HISTSIZE - 1;
+			++count[n];
+		}
 
-        printf ("\n\n      Distribution of residuals from %d degree fit\n",
+		printf ("\n\n      Distribution of residuals from %d degree fit\n",
 	                                                           max_degree);
-        printf ("\n        residual range     count\n");
-	totcount = 0;
-	for (j = 0; j < HISTSIZE; j++)
-	{
-	    if (j == 0)
-	        printf ("    less than %10.3f     %d\n", min_resid + interval,
+		printf ("\n        residual range     count\n");
+		totcount = 0;
+		for (j = 0; j < HISTSIZE; j++)
+		{
+			if (j == 0)
+				printf ("    less than %10.3f     %d\n", min_resid + interval,
 		                                                    count[j]);
-	    else if (j == HISTSIZE - 1)
-	        printf (" greater than %10.3f     %d\n", min_resid, count[j]);
-	    else
-	        printf ("%10.3f to %10.3f     %d\n", min_resid, 
+			else if (j == HISTSIZE - 1)
+				printf (" greater than %10.3f     %d\n", min_resid, count[j]);
+			else
+				printf ("%10.3f to %10.3f     %d\n", min_resid, 
 		                              min_resid + interval, count[j]);
-	    totcount += count[j];
-	    min_resid += interval;
-	}  
-	printf ("\n              total        %d\n", totcount);
+			totcount += count[j];
+			min_resid += interval;
+		}  
+		printf ("\n              total        %d\n", totcount);
 
-        fprintf (stderr, "\n");
+		fprintf (stderr, "\n");
     }
 
 /*	free arrays	*/
