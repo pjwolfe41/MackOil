@@ -1,7 +1,9 @@
+#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <direct.h>
 
 #ifndef M_PI
 #define M_PI  3.14159265358979323846
@@ -23,7 +25,7 @@ static void write_panel (char *maptitle, DATATYPE data_type,
                          int col, int ncol, int row, int nrow);
 
 
-void main (int argc, char *argv[])
+void main (int argcXX, char *argvXX[])
 {
     char *datatitle;
     char *maptitle;
@@ -41,6 +43,16 @@ void main (int argc, char *argv[])
     unsigned long *code;
 
     // setbuf (stdout, (char *) NULL);
+
+	////////////// TEST ARGUMENTS
+	int argc = 3;
+	char *argv[10];
+	argv[1] = "COLUMBUS";
+	argv[2] = "obs";
+
+	int retval = SetCurrentDirectory("C:\\MACK\\MackOil\\map");
+	char buf[200];
+	GetCurrentDirectory(200, buf);
 
 /*	get data to plot	*/
 
@@ -159,13 +171,16 @@ void main (int argc, char *argv[])
 
     ymax += 1;		/* leave one inch at top for the title */
 
-    ncol = (int) ceil ((xmax - xmin) / 7.5);	/* panels 7.5 inches wide */
-    nrow = (int) ceil ((ymax - ymin) / 10);	/* panels 10 inches high */
+#define PANEL_WIDTH_INCHES  22.0	// 7.5
+#define PANEL_HEIGHT_INCHES 20.0	// 10.0
+
+    ncol = (int) ceil ((xmax - xmin) / PANEL_WIDTH_INCHES);	
+    nrow = (int) ceil ((ymax - ymin) / PANEL_HEIGHT_INCHES);
 
     xmin = xmin + (xmax - xmin - 7.5 * ncol) / 2;
     xmax = xmin + ncol * 7.5;
-    ymin = ymin + (ymax - ymin - 10. * nrow) / 2;
-    ymax = ymin + nrow * 10.;
+    ymin = ymin + (ymax - ymin - 10.0 * nrow) / 2;
+    ymax = ymin + nrow * 10.0;
 
 /*	loop to write panels	*/
 
@@ -205,12 +220,12 @@ static void write_panel (char *maptitle, DATATYPE data_type,
 
 /*	determine border of the panel	*/
 
-    xleft = xmin + col * 7.5; 
-    xright = xleft + 7.5;
+    xleft = xmin + col * PANEL_WIDTH_INCHES; 
+    xright = xleft + PANEL_WIDTH_INCHES;
     xleft -= .5;
     xright += .5;
-    ytop = ymax - row * 10.;
-    ybot = ytop - 10.;
+    ytop = ymax - row * PANEL_HEIGHT_INCHES;
+    ybot = ytop - PANEL_HEIGHT_INCHES;
     ytop += .5;
     ybot -= .5;
 
@@ -219,6 +234,7 @@ static void write_panel (char *maptitle, DATATYPE data_type,
     printf ("/Helvetica findfont\n");
     printf ("10 scalefont setfont\n");
 
+	/*
     if (col > 0)
         printf ("(%s  panel %c-%d   attach panel %c-%d here) attachleft\n", 
 			 maptitle, column_label[col], row + 1, column_label[col - 1], row + 1);
@@ -231,15 +247,20 @@ static void write_panel (char *maptitle, DATATYPE data_type,
     if (row < nrow - 1)
         printf ("(%s  panel %c-%d   attach panel %c-%d here) attachbottom\n",
 			maptitle, column_label[col], row + 1, column_label[col], row + 2);
+	*/
 
 /*	draw the map border	*/
 
+	/*
     printf ("%g %g %g %g mapborder\n", xmin - xleft, xmax - xleft,
                                        ymin - ybot, ymax - ybot);
+    */
 
 /*	define clipping area for remaining information	*/
 
+	/*
     printf ("clippage\n");
+	*/
 
 /*	put the title at the top center of the top row panels	*/
 
@@ -248,7 +269,7 @@ static void write_panel (char *maptitle, DATATYPE data_type,
         printf ("/Helvetica findfont\n");
         printf ("18 scalefont setfont\n");
 
-		printf ("%g inch 9.9 inch moveto\n", (xmin + xmax) / 2 - xleft);
+		printf ("%g inch 20.5 inch moveto\n", PANEL_WIDTH_INCHES / 3);  // (xmin + xmax) / 2 - xleft);
 		printf ("(%s) centeredshow\n", maptitle);
     }
 
@@ -277,7 +298,7 @@ static void write_panel (char *maptitle, DATATYPE data_type,
 
     for (i = 0; i < npoint; i++)
     {
-        x = x_inch[i];
+        x = x_inch[i] + 3.0;
         if (x < xleft || x > xright)
 			continue;
 		y = y_inch[i];

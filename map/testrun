@@ -1,0 +1,2 @@
+map/release/map testdata code > resultxx
+cat HEADER.PS resultxx > resultmap.ps

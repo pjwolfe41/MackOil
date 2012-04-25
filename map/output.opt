@@ -37,7 +37,7 @@ ZVALUE  "Bouguer"  2
 //	ratio  - the number of inches on the earth's surface that is 
 //               represented by one inch on the map 
 
-SCALE  150000
+SCALE  25000
 
 //  POST specifies the how points are posted on a map; POST is required if
 //  program map is used
