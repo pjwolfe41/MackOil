@@ -47,7 +47,7 @@ void main (int argcXX, char *argvXX[])
 	////////////// TEST ARGUMENTS
 	int argc = 3;
 	char *argv[10];
-	argv[1] = "COLUMBUS";
+	argv[1] = "atesarea";
 	argv[2] = "obs";
 
 	int retval = SetCurrentDirectory("C:\\MACK\\MackOil\\map");
@@ -169,18 +169,20 @@ void main (int argcXX, char *argvXX[])
 
 /*	determine grid of panels	*/
 
-    ymax += 1;		/* leave one inch at top for the title */
+    // ymax += 1;		/* leave one inch at top for the title */
 
-#define PANEL_WIDTH_INCHES  22.0	// 7.5
-#define PANEL_HEIGHT_INCHES 20.0	// 10.0
+#define PANEL_WIDTH_INCHES  26.0	// 7.5
+#define PANEL_HEIGHT_INCHES 22.0	// 10.0
 
     ncol = (int) ceil ((xmax - xmin) / PANEL_WIDTH_INCHES);	
     nrow = (int) ceil ((ymax - ymin) / PANEL_HEIGHT_INCHES);
 
-    xmin = xmin + (xmax - xmin - 7.5 * ncol) / 2;
-    xmax = xmin + ncol * 7.5;
-    ymin = ymin + (ymax - ymin - 10.0 * nrow) / 2;
-    ymax = ymin + nrow * 10.0;
+	/*
+    xmin = xmin + (xmax - xmin - PANEL_WIDTH_INCHES * ncol) / 2;
+    xmax = xmin + ncol * PANEL_WIDTH_INCHES;
+    ymin = ymin + (ymax - ymin - PANEL_HEIGHT_INCHES * nrow) / 2;
+    ymax = ymin + nrow * PANEL_HEIGHT_INCHES;
+	*/
 
 /*	loop to write panels	*/
 
@@ -222,12 +224,12 @@ static void write_panel (char *maptitle, DATATYPE data_type,
 
     xleft = xmin + col * PANEL_WIDTH_INCHES; 
     xright = xleft + PANEL_WIDTH_INCHES;
-    xleft -= .5;
-    xright += .5;
+    //xleft -= .5;   ????
+    //xright += .5;
     ytop = ymax - row * PANEL_HEIGHT_INCHES;
     ybot = ytop - PANEL_HEIGHT_INCHES;
-    ytop += .5;
-    ybot -= .5;
+    //ytop += .5;
+    //ybot -= .5;
 
 /*	put instructions for assembly along the borders of the panel	*/
 
@@ -264,6 +266,7 @@ static void write_panel (char *maptitle, DATATYPE data_type,
 
 /*	put the title at the top center of the top row panels	*/
 
+	/*
     if (row == 0)
     {
         printf ("/Helvetica findfont\n");
@@ -272,6 +275,7 @@ static void write_panel (char *maptitle, DATATYPE data_type,
 		printf ("%g inch 20.5 inch moveto\n", PANEL_WIDTH_INCHES / 3);  // (xmin + xmax) / 2 - xleft);
 		printf ("(%s) centeredshow\n", maptitle);
     }
+	*/
 
 /*	add labels and lines from the options file	*/
 
@@ -298,7 +302,8 @@ static void write_panel (char *maptitle, DATATYPE data_type,
 
     for (i = 0; i < npoint; i++)
     {
-        x = x_inch[i] + 3.0;
+        // x = x_inch[i] + 3.0;
+		x = x_inch[i];
         if (x < xleft || x > xright)
 			continue;
 		y = y_inch[i];

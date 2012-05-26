@@ -1,0 +1,2 @@
+map/release/map atesarea obs > resultxx
+cat HEADER.PS resultxx > resultmap.ps

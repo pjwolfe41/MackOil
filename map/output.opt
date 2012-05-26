@@ -37,7 +37,7 @@ ZVALUE  "Bouguer"  2
 //	ratio  - the number of inches on the earth's surface that is 
 //               represented by one inch on the map 
 
-SCALE  25000
+SCALE  40000
 
 //  POST specifies the how points are posted on a map; POST is required if
 //  program map is used
@@ -64,8 +64,8 @@ POST  Helvetica-Bold  8  45
 //	rotate   - the number of degrees that the label is to be rotated 
 //	           from the horizontal
 
-MAPLABEL "HELLO" 87. 30.70 "Helvetica" 12 90
-MAPLABEL "AGAIN" 87.1 30.78 "Helvetica" 12 90
+// MAPLABEL "HELLO" 87. 30.70 "Helvetica" 12 90
+// MAPLABEL "AGAIN" 87.1 30.78 "Helvetica" 12 90
 
 //  MAPLINE specifies a line that is to be drawn on the map; there can be
 //  several MAPLINEs but none is required
