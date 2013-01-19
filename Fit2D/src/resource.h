@@ -12,7 +12,11 @@
 #define IDC_MAP_BUTTON                  1004
 #define IDC_EXIT_BUTTON                 1005
 #define IDC_DATA_PATH                   1041
-#define IDC_DATA_LABEL                  1042
+#define IDC_DATA_PATH_LABEL             1042
+#define IDC_DATA_TITLE                  1043
+#define IDC_DATA_TITLE_LABEL            1044
+#define IDC_DATA_COUNT                  1045
+#define IDC_DATA_COUNT_LABEL            1046
 
 // Next default values for new objects
 // 

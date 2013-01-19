@@ -2,7 +2,9 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <direct.h>
 #include "main.h"
+#include "readdata.h"
 
 BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK FitDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -10,6 +12,8 @@ BOOL CALLBACK ListDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK MapDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
 HINSTANCE ghInstance;
+
+char dataname[100] = "";
 
 
 /*
@@ -54,6 +58,7 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	OPENFILENAME ofn;
 	char szFile[260];
+	char *p;
 
 	switch (msg) 
 	{
@@ -65,6 +70,9 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 		switch (LOWORD(wParam)) 
 		{
 		case IDC_OPEN_DATA_BUTTON:
+			SetDlgItemText(hDlg, IDC_DATA_PATH, "");
+			SetDlgItemText(hDlg, IDC_DATA_TITLE, "");
+
 			ZeroMemory(&ofn, sizeof(ofn));
 			ofn.lStructSize = sizeof(ofn);
 			ofn.hwndOwner = hDlg;
@@ -84,6 +92,50 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			{	
 				SetDlgItemText(hDlg, IDC_DATA_PATH, szFile);
 			}
+
+			p = szFile + strlen(szFile) - strlen(".dat");
+			if (_stricmp(p, ".dat") != 0) {
+				MessageBox(0, "File name does not end in .dat", "Invalid File", 0);
+				dataname[0] = 0;
+				break;
+			}
+
+			*p = 0;
+			while (*p != '\\') {
+			    --p;
+			}
+			strcpy_s(dataname, sizeof(dataname), ++p);
+
+			if (strlen(dataname) == 0) {
+				MessageBox(0, "Not a valid data name", "Invalid Data Name", 0);
+				dataname[0] = 0;
+				break;
+			}
+
+			*p = 0;
+			if (_chdir(szFile) != 0) {
+				MessageBox(0, "Cannot chdir to the data folder", "Access Error", 0);
+				dataname[0] = 0;
+				break;
+			}
+
+			char *title;
+            unsigned long *code;
+			double *x, *y, *z;
+
+			int datacount;
+			datacount = readdata(dataname, &title, &code, &x, &y, &z);
+
+			if (datacount < 1) {
+				MessageBox(0, "Cannot read data file", "Access Error", 0);
+				dataname[0] = 0;
+				freedata();
+				break;
+			}
+
+			SetDlgItemText(hDlg, IDC_DATA_TITLE, title);
+			SetDlgItemInt(hDlg, IDC_DATA_COUNT, datacount, FALSE);
+			freedata();
 			break;
 
 		case IDC_FIT_BUTTON:
