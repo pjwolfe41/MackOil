@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <stdio.h>
+
 #include "utility.h"
 
 /*
@@ -9,6 +11,10 @@
 
 void error_stop (char *msg1, char *msg2)
 {
+	char msgbuf[100];
+	sprintf_s (msgbuf, sizeof(msgbuf), "\n***** error: %s %s\n", msg1, msg2);
+	MessageBox(0, msgbuf, "error_stop", 0);
+
     printf ("\n***** error: %s %s\n", msg1, msg2);
     printf ("***** run terminated.\n");
     fprintf (stderr, "\n***** error: %s %s\n", msg1, msg2);

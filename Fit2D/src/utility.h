@@ -1,3 +1,6 @@
+
+#include <windows.h>
+
 /*
 **  error_stop - print error message and terminate run.
 **

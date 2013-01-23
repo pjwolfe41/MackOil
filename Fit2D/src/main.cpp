@@ -5,6 +5,7 @@
 #include <direct.h>
 #include "main.h"
 #include "readdata.h"
+#include "leastsq.h"
 
 BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK FitDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -172,6 +173,8 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 */
 BOOL CALLBACK FitDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	int degree = 0;
+
 	switch (msg) 
 	{
 	case WM_INITDIALOG:
@@ -180,9 +183,16 @@ BOOL CALLBACK FitDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) 
-		{
+		{			
 
 		case IDOK:
+			degree = GetDlgItemInt(hDlg, IDC_FIT_DEGREE, NULL, FALSE);
+			if (degree <= 0 || degree > 25) {
+				MessageBox(0, "Maximum Fit Degree must not exceed 25.", "ERROR", 0);
+				return FALSE;
+			}
+			leastsq(dataname, degree);
+			EndDialog(hDlg, NULL);
 			break;
 
 		case IDCANCEL:
