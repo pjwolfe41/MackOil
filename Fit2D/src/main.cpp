@@ -140,7 +140,18 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case IDC_FIT_BUTTON:
-			DialogBoxParam(ghInstance, MAKEINTRESOURCE(IDD_FIT_DLG), hDlg, FitDlgProc, NULL);
+			INT_PTR fitdegree;
+			SetDlgItemText(hDlg, IDC_FIT_STATUS, "");
+			fitdegree = DialogBoxParam(ghInstance, MAKEINTRESOURCE(IDD_FIT_DLG), hDlg, FitDlgProc, NULL);
+			if (fitdegree > 0) {
+				char status[100];
+				sprintf_s(status, sizeof(status), "Fits to degree %d complete; see %s Fit Report", fitdegree, dataname);
+				SetDlgItemText(hDlg, IDC_FIT_STATUS, status);
+			}
+			else {
+				SetDlgItemText(hDlg, IDC_FIT_STATUS, "");
+			}
+
 			break;
 
 		case IDC_LIST_BUTTON:
@@ -192,11 +203,11 @@ BOOL CALLBACK FitDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 				return FALSE;
 			}
 			leastsq(dataname, degree);
-			EndDialog(hDlg, NULL);
+			EndDialog(hDlg, degree);
 			break;
 
 		case IDCANCEL:
-			EndDialog(hDlg, NULL);
+			EndDialog(hDlg, 0);
 		}
 
 		return TRUE;

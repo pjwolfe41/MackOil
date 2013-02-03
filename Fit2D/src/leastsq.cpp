@@ -78,7 +78,7 @@ void leastsq (char *data_name, int max_degree)
 	FILE *rfp;
 
 	strcpy_s (report, sizeof(report), data_name);
-	strcat_s (report, sizeof(report), ".fitrep");
+	strcat_s (report, sizeof(report), " Fit Report.txt");
 	fopen_s (&rfp, report, "wb");
 	if (rfp == NULL)
 		error_stop ("cannot open file", report);
@@ -89,7 +89,7 @@ void leastsq (char *data_name, int max_degree)
 
 		td = time (NULL);
 		ctime_s(ctime_buf, 100, &td);
-        fprintf (rfp, "Least Squares Surface Fit   %s    %s\n", data_name, ctime_buf);
+        fprintf (rfp, "Least Squares Surface Fit   %s    %s\r\n", data_name, ctime_buf);
     }
 
 /*	initialize fit degrees array	*/
@@ -100,12 +100,12 @@ void leastsq (char *data_name, int max_degree)
 /*	data input	*/
 
     npoint = readdata (data_name, &title, &code, &x, &y, &z);
-    fprintf (rfp, "\n  data title: %s\n", title);
-    fprintf (rfp, "\n  %u data points on surface\n", npoint);
+    fprintf (rfp, "\r\n  data title: %s\r\n", title);
+    fprintf (rfp, "\r\n  %u data points on surface\r\n", npoint);
 
 /*	compute normalization values for x and y	*/
 
-    fprintf (stderr, "normalize x and y\n");
+    fprintf (stderr, "normalize x and y\r\n");
     {
         double xmin, xmax, ymin, ymax, zmin, zmax;
 
@@ -120,9 +120,9 @@ void leastsq (char *data_name, int max_degree)
 	    ymax = y[i] > ymax ? y[i] : ymax;
 	    zmax = z[i] > zmax ? z[i] : zmax;
         }
-        fprintf (rfp, "\n  Range of values   x:  %g to %g\n", xmin, xmax);
-        fprintf (rfp, "                    y:  %g to %g\n", ymin, ymax);
-        fprintf (rfp, "                    z:  %g to %g\n", zmin, zmax);
+        fprintf (rfp, "\r\n  Range of values   x:  %g to %g\r\n", xmin, xmax);
+        fprintf (rfp, "                    y:  %g to %g\r\n", ymin, ymax);
+        fprintf (rfp, "                    z:  %g to %g\r\n", zmin, zmax);
 
         xsub = (xmax + xmin) / 2;
         ysub = (ymax + ymin) / 2;
@@ -133,7 +133,7 @@ void leastsq (char *data_name, int max_degree)
 
 /*	normalize x and y and compute sums	*/
 
-    fprintf (stderr, "compute sums\n");
+    fprintf (stderr, "compute sums\r\n");
     for (i = 0; i < term_cnt; i++)
         csum[i] = 0; 
     for (i = 0; i < sum_cnt; i++)
@@ -149,13 +149,13 @@ void leastsq (char *data_name, int max_degree)
 	for (j = 0; j < sum_cnt; j++)
 	    sum[j] += power[j];
     }
-    fprintf (stderr, "\n");
-    fprintf (rfp, "\n  Average values after normalization   x = %.6f,  y = %.6f\n",
+    fprintf (stderr, "\r\n");
+    fprintf (rfp, "\r\n  Average values after normalization   x = %.6f,  y = %.6f\r\n",
                                              sum[1] / npoint, sum[2] / npoint);
 
 /*	load matrix	*/
 
-    fprintf (stderr, "load matrix\n");
+    fprintf (stderr, "load matrix\r\n");
     lup = 0;
     ka = kb = kc = term_cnt;
     for (t = 0; t <= max_degree; t++)
@@ -198,7 +198,7 @@ void leastsq (char *data_name, int max_degree)
 
 /*	zero matrix	*/
 
-    fprintf (stderr, "zero matrix\n");
+    fprintf (stderr, "zero matrix\r\n");
     m = 1;
     for (i = 0; i < term_cnt - 1; i++)
     {
@@ -220,7 +220,7 @@ void leastsq (char *data_name, int max_degree)
 
 /*	solve matrix	*/
 
-    fprintf (stderr, "solve matrix\n");
+    fprintf (stderr, "solve matrix\r\n");
     ka = 0;
     for (kk = 0; kk < max_degree; kk++)
     {
@@ -246,7 +246,7 @@ void leastsq (char *data_name, int max_degree)
 
 /*	save computed coefficients and normalization values	*/
 
-    fprintf (stderr, "save fit coefficients\n");
+    fprintf (stderr, "save fit coefficients\r\n");
     {
         char filename[20];
 		FILE *fp;
@@ -286,7 +286,7 @@ void leastsq (char *data_name, int max_degree)
 
 /*	compute rms deviations	*/
 
-    fprintf (stderr, "compute rms deviations\n");
+    fprintf (stderr, "compute rms deviations\r\n");
     {
         double *dev;
 		double fit, resid;
@@ -312,20 +312,20 @@ void leastsq (char *data_name, int max_degree)
 				dev[j] += resid * resid;
 			}
         }
-        fprintf (rfp, "\n\n             Root-mean-square deviations\n");
-        fprintf (rfp, "\ndegree   deviation\n");
+        fprintf (rfp, "\r\n\r\n             Root-mean-square deviations\r\n");
+        fprintf (rfp, "\r\ndegree   deviation\r\n");
         for (i = 0; i < max_degree; i++)
-			fprintf (rfp, "%4d %12.4f\n", mdeg[i], sqrt (dev[i] / npoint));
+			fprintf (rfp, "%4d %12.4f\r\n", mdeg[i], sqrt (dev[i] / npoint));
 
 		rms = sqrt (dev[0] / npoint);
 
 		free (dev);
-        fprintf (stderr, "\n");
+        fprintf (stderr, "\r\n");
     }
 
 /*	compute histogram of residuals	*/
 
-    fprintf (stderr, "compute residual histogram\n");
+    fprintf (stderr, "compute residual histogram\r\n");
     {
 #define  HISTSIZE 50
         int count[HISTSIZE];
@@ -363,26 +363,26 @@ void leastsq (char *data_name, int max_degree)
 			++count[n];
 		}
 
-		fprintf (rfp, "\n\n      Distribution of residuals from %d degree fit\n",
+		fprintf (rfp, "\r\n\r\n      Distribution of residuals from %d degree fit\r\n",
 	                                                           max_degree);
-		fprintf (rfp, "\n        residual range     count\n");
+		fprintf (rfp, "\r\n        residual range     count\r\n");
 		totcount = 0;
 		for (j = 0; j < HISTSIZE; j++)
 		{
 			if (j == 0)
-				fprintf (rfp, "    less than %10.3f     %d\n", min_resid + interval,
+				fprintf (rfp, "    less than %10.3f     %d\r\n", min_resid + interval,
 		                                                    count[j]);
 			else if (j == HISTSIZE - 1)
-				fprintf (rfp, " greater than %10.3f     %d\n", min_resid, count[j]);
+				fprintf (rfp, " greater than %10.3f     %d\r\n", min_resid, count[j]);
 			else
-				fprintf (rfp, "%10.3f to %10.3f     %d\n", min_resid, 
+				fprintf (rfp, "%10.3f to %10.3f     %d\r\n", min_resid, 
 		                              min_resid + interval, count[j]);
 			totcount += count[j];
 			min_resid += interval;
 		}  
-		fprintf (rfp, "\n              total        %d\n", totcount);
+		fprintf (rfp, "\r\n              total        %d\r\n", totcount);
 
-		fprintf (stderr, "\n");
+		fprintf (stderr, "\r\n");
     }
 
 	fclose(rfp);

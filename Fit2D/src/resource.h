@@ -19,6 +19,7 @@
 #define IDC_DATA_COUNT_LABEL            1046
 #define IDC_FIT_DEGREE					1051
 #define IDC_FIT_DEGREE_LABEL			1052
+#define IDC_FIT_STATUS					1061
 
 // Next default values for new objects
 // 
