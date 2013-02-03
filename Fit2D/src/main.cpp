@@ -64,7 +64,12 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg) 
 	{
 	case WM_INITDIALOG:
+		SetDlgItemText(hDlg, IDC_DATA_PATH, "");
+		SetDlgItemText(hDlg, IDC_DATA_TITLE, "");
+		SetDlgItemText(hDlg, IDC_DATA_COUNT, "");
 		
+		SetDlgItemText(hDlg, IDC_FIT_STATUS, "");
+
 		return TRUE;
 
 	case WM_COMMAND:
@@ -73,6 +78,9 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 		case IDC_OPEN_DATA_BUTTON:
 			SetDlgItemText(hDlg, IDC_DATA_PATH, "");
 			SetDlgItemText(hDlg, IDC_DATA_TITLE, "");
+			SetDlgItemText(hDlg, IDC_DATA_COUNT, "");
+
+			SetDlgItemText(hDlg, IDC_FIT_STATUS, "");
 
 			ZeroMemory(&ofn, sizeof(ofn));
 			ofn.lStructSize = sizeof(ofn);
