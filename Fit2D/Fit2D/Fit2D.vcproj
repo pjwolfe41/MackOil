@@ -184,7 +184,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\list.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\main.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\outopt.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\prepdata.cpp"
 				>
 			</File>
 			<File
@@ -207,6 +219,14 @@
 			</File>
 			<File
 				RelativePath="..\src\main.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\outopt.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\prepdata.h"
 				>
 			</File>
 			<File

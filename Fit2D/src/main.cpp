@@ -6,6 +6,7 @@
 #include "main.h"
 #include "readdata.h"
 #include "leastsq.h"
+#include "list.h"
 
 BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK FitDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -163,7 +164,14 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case IDC_LIST_BUTTON:
-			DialogBoxParam(ghInstance, MAKEINTRESOURCE(IDD_LIST_DLG), hDlg, ListDlgProc, NULL);
+			// DialogBoxParam(ghInstance, MAKEINTRESOURCE(IDD_LIST_DLG), hDlg, ListDlgProc, NULL);
+			int argc;
+			char *argv[5];
+			argc = 3;
+			argv[0] = "list";
+			argv[1] = "IOSCO";
+			argv[2] = "code";
+			list(argc, argv); 
 			break;
 
 		case IDC_MAP_BUTTON:
