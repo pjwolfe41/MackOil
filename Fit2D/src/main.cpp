@@ -154,7 +154,8 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			fitdegree = DialogBoxParam(ghInstance, MAKEINTRESOURCE(IDD_FIT_DLG), hDlg, FitDlgProc, NULL);
 			if (fitdegree > 0) {
 				char status[100];
-				sprintf_s(status, sizeof(status), "Fits to degree %d complete; see %s Fit Report", fitdegree, dataname);
+				sprintf_s(status, sizeof(status), "Fits to degree %d complete; see %s Fit %d Report", 
+					                fitdegree, dataname, fitdegree);
 				SetDlgItemText(hDlg, IDC_FIT_STATUS, status);
 			}
 			else {

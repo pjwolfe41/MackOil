@@ -74,11 +74,10 @@ void leastsq (char *data_name, int max_degree)
 
 /*	begin output report	*/
 
-	char report[40];
+	char report[200];
 	FILE *rfp;
 
-	strcpy_s (report, sizeof(report), data_name);
-	strcat_s (report, sizeof(report), " Fit Report.txt");
+	sprintf_s(report, sizeof(report), "%s Fit %d Report.txt", data_name, max_degree);
 	fopen_s (&rfp, report, "wb");
 	if (rfp == NULL)
 		error_stop ("cannot open file", report);
