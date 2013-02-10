@@ -165,14 +165,16 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case IDC_LIST_BUTTON:
-			// DialogBoxParam(ghInstance, MAKEINTRESOURCE(IDD_LIST_DLG), hDlg, ListDlgProc, NULL);
+			DialogBoxParam(ghInstance, MAKEINTRESOURCE(IDD_LIST_DLG), hDlg, ListDlgProc, NULL);
+			/*
 			int argc;
 			char *argv[5];
 			argc = 3;
 			argv[0] = "list";
 			argv[1] = "IOSCO";
 			argv[2] = "code";
-			list(argc, argv); 
+			list(argc, argv);
+			*/
 			break;
 
 		case IDC_MAP_BUTTON:
@@ -239,6 +241,11 @@ BOOL CALLBACK FitDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 */
 BOOL CALLBACK ListDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	char *listtype;
+	char textdegree[10];
+	int degree;
+	char fitdataname[100];
+
 	switch (msg) 
 	{
 	case WM_INITDIALOG:
@@ -250,6 +257,45 @@ BOOL CALLBACK ListDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 
 		case IDOK:
+			listtype = "";
+			degree = 0;
+			fitdataname[0] = '\0';
+			if (IsDlgButtonChecked(hDlg, IDC_LIST_CODE)) listtype = "code";
+			if (IsDlgButtonChecked(hDlg, IDC_LIST_OBS)) listtype = "obs";
+			if (IsDlgButtonChecked(hDlg, IDC_LIST_FIT)) listtype = "fit";
+			if (IsDlgButtonChecked(hDlg, IDC_LIST_RESID)) listtype = "resid";
+			if (*listtype == '\0') {
+				MessageBox(0, "Please select one of code, obs, fit, resid", "ERROR", 0);
+				return FALSE;
+			}
+			if (strcmp(listtype, "fit") == 0 || strcmp(listtype, "resid") == 0) {
+				degree = GetDlgItemInt(hDlg, IDC_LIST_FIT_DEGREE, NULL, FALSE);
+				if (degree <= 0 || degree > 25) {
+					MessageBox(0, "Fit Degree must be specified and may not exceed 25.", "ERROR", 0);
+					return FALSE;
+				}
+				GetDlgItemText(hDlg, IDC_LIST_FIT_NAME, fitdataname, sizeof(fitdataname));
+				if (strcmp(fitdataname, "") == 0) {
+					strcpy_s(fitdataname, sizeof(fitdataname), dataname);
+				}
+			}
+
+			int argc;
+			char *argv[5];
+			argc = 3;
+			argv[0] = "list";
+			argv[1] = dataname;
+			argv[2] = listtype;
+			if (strcmp(listtype, "fit") == 0 || strcmp(listtype, "resid") == 0) {
+				sprintf_s(textdegree, sizeof(textdegree), "%d", degree);
+				argv[3] = textdegree;
+				argv[4] = fitdataname;
+				argc = 5;
+			}
+			list(argc, argv);
+
+			// leastsq(dataname, degree);
+			// EndDialog(hDlg, degree);
 			break;
 
 		case IDCANCEL:
