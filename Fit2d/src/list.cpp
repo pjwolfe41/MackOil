@@ -28,15 +28,11 @@ void list (int argc, char *argv[], char *listreport_filename)
     int zsize;
     unsigned long *code;
 
-    char report[40];
 	FILE *rfp;
-
-	strcpy_s (report, sizeof(report), "IOSCO");
-	strcat_s (report, sizeof(report), " List Report.txt");
 
 	fopen_s (&rfp, listreport_filename, "wb");
 	if (rfp == NULL)
-		error_stop ("cannot open file", report);
+		error_stop ("cannot open file", listreport_filename);
 
 /*	get data to list	*/
 

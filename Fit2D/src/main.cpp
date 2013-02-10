@@ -7,6 +7,7 @@
 #include "readdata.h"
 #include "leastsq.h"
 #include "list.h"
+#include "map.h"
 
 BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK FitDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -19,6 +20,7 @@ bool dataopen = false;
 char dataname[100] = "";
 char fitreport_filename[200] = "";
 char listreport_filename[200] = "";
+char map_filename[200] = "";
 
 
 /*
@@ -194,9 +196,24 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case IDC_MAP_BUTTON:
-			DialogBoxParam(ghInstance, MAKEINTRESOURCE(IDD_MAP_DLG), hDlg, MapDlgProc, NULL);
-			break;
+			if (!dataopen) {
+				MessageBox(0, "You must Open Data first", "Data Not Open", 0);
+				return FALSE;
+			}
+			SetDlgItemText(hDlg, IDC_MAP_STATUS, "");
+			retval = DialogBoxParam(ghInstance, MAKEINTRESOURCE(IDD_MAP_DLG), hDlg, MapDlgProc, NULL);
 
+			if (retval) {
+				char status[100];
+				sprintf_s(status, sizeof(status), "Map complete; see %s", map_filename); 
+				SetDlgItemText(hDlg, IDC_MAP_STATUS, status);
+			}
+			else {
+				SetDlgItemText(hDlg, IDC_MAP_STATUS, "");
+			}
+
+			break;
+			
 		case IDCANCEL:
 		case IDC_EXIT_BUTTON:
 			DestroyWindow(hDlg);
@@ -343,6 +360,11 @@ BOOL CALLBACK ListDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 */
 BOOL CALLBACK MapDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	char *maptype;
+	char textdegree[10];
+	int degree;
+	char fitdataname[100];
+
 	switch (msg) 
 	{
 	case WM_INITDIALOG:
@@ -354,6 +376,56 @@ BOOL CALLBACK MapDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 
 		case IDOK:
+			maptype = "";
+			degree = 0;
+			fitdataname[0] = '\0';
+			if (IsDlgButtonChecked(hDlg, IDC_MAP_CODE)) maptype = "code";
+			if (IsDlgButtonChecked(hDlg, IDC_MAP_OBS)) maptype = "obs";
+			if (IsDlgButtonChecked(hDlg, IDC_MAP_FIT)) maptype = "fit";
+			if (IsDlgButtonChecked(hDlg, IDC_MAP_RESID)) maptype = "resid";
+			if (*maptype == '\0') {
+				MessageBox(0, "Please select one of code, obs, fit, resid", "ERROR", 0);
+				return FALSE;
+			}
+			if (strcmp(maptype, "fit") == 0 || strcmp(maptype, "resid") == 0) {
+				degree = GetDlgItemInt(hDlg, IDC_MAP_FIT_DEGREE, NULL, FALSE);
+				if (degree <= 0 || degree > 25) {
+					MessageBox(0, "Fit Degree must be specified and may not exceed 25.", "ERROR", 0);
+					return FALSE;
+				}
+				GetDlgItemText(hDlg, IDC_MAP_FIT_NAME, fitdataname, sizeof(fitdataname));
+			}
+
+			int argc;
+			char *argv[5];
+			argc = 3;
+			argv[0] = "map";
+			argv[1] = dataname;
+			argv[2] = maptype;
+			textdegree[0] = '\0';
+			if (strcmp(maptype, "fit") == 0 || strcmp(maptype, "resid") == 0) {
+				sprintf_s(textdegree, sizeof(textdegree), "%d", degree);
+				argv[3] = textdegree;
+				argc = 4;
+				if (strcmp(fitdataname, "") != 0) {
+					argv[4] = fitdataname;
+					argc = 5;
+				}
+			}
+			sprintf_s(map_filename, sizeof(map_filename), "%s Map %s", dataname, maptype);
+			if (strcmp(textdegree, "") != 0) {
+				strncat_s(map_filename, sizeof(map_filename), " ", _TRUNCATE);
+				strncat_s(map_filename, sizeof(map_filename), textdegree, _TRUNCATE);
+			}
+			if (strcmp(fitdataname, "") != 0) {
+				strncat_s(map_filename, sizeof(map_filename), " ", _TRUNCATE);
+				strncat_s(map_filename, sizeof(map_filename), fitdataname, _TRUNCATE);
+			}
+			strncat_s(map_filename, sizeof(map_filename), ".ps", _TRUNCATE);
+
+			map(argc, argv, map_filename);
+
+			EndDialog(hDlg, 1);
 			break;
 
 		case IDCANCEL:

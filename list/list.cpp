@@ -27,8 +27,6 @@ void main (int argc, char *argv[])
     int zsize;
     unsigned long *code;
 
-    setbuf (stdout, (char *) NULL);
-
 /*	get data to list	*/
 
     npoint = prepdata (argc, argv,
@@ -77,19 +75,19 @@ void main (int argc, char *argv[])
     switch (data_type)
     {
         case CODE:
-	    sprintf (list_title, "%s - Station Codes", datatitle);
-	    break;
+			sprintf (list_title, "%s - Station Codes", datatitle);
+			break;
         case OBS:
-	    sprintf (list_title, "%s - %s Values", datatitle, zname);
-	    break;
-	case FIT:
-	    sprintf (list_title, "%s - Degree %d Fit of %s Values",
+			sprintf (list_title, "%s - %s Values", datatitle, zname);
+			break;
+		case FIT:
+			sprintf (list_title, "%s - Degree %d Fit of %s Values",
 	                                      datatitle, fit_degree, zname);
-	    break;
- 	case RESID:
-	    sprintf (list_title, "%s - Degree %d Fit Residual of %s Values",
+			 break;
+ 		case RESID:
+			sprintf (list_title, "%s - Degree %d Fit Residual of %s Values",
 	                                      datatitle, fit_degree, zname);
-	    break;
+			break;
     }
 
 /*	determine size of z values for output formatting	*/
@@ -97,24 +95,25 @@ void main (int argc, char *argv[])
     zsize = zdigits + 1;
     {
         double zmin = 1.e+50;
-	double zmax = - zmin;
+		double zmax = - zmin;
 
         for (i = 0; i < npoint; i++)
         {
             zmin = z[i] < zmin ? z[i] : zmin;
             zmax = z[i] > zmax ? z[i] : zmax;
         }
-	if (zmin < 0)
-	{
-	    zsize += 1;			/* to allow for - sign */
-	    if (- zmin > zmax)
-	        zmax = - zmin;
-	}
+
+		if (zmin < 0)
+		{
+			zsize += 1;			/* to allow for - sign */
+			if (- zmin > zmax)
+				zmax = - zmin;
+		}
         if (zmax >= 1)
-	    zsize += (int) ceil (log10 (zmax));
-    }
-    if (zsize < (int) strlen (zname))
-        zsize = (int) strlen (zname);
+			zsize += (int) ceil (log10 (zmax));
+		}
+		if (zsize < (int) strlen (zname))
+			zsize = (int) strlen (zname);
 
 /*	print the title and column headings	*/
 

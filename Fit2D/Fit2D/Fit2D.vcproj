@@ -192,6 +192,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\map.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\outopt.cpp"
 				>
 			</File>
@@ -219,6 +223,10 @@
 			</File>
 			<File
 				RelativePath="..\src\main.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\map.h"
 				>
 			</File>
 			<File

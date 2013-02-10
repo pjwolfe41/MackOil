@@ -24,7 +24,7 @@
 
 #define IDC_FIT_STATUS                  1061
 #define IDC_LIST_STATUS					1062
-
+#define IDC_MAP_STATUS					1063
 #define IDC_LIST_CODE                   1071
 #define IDC_LIST_OBS                    1072
 #define IDC_LIST_FIT                    1073
@@ -33,6 +33,15 @@
 #define IDC_LIST_FIT_DEGREE_LABEL		1076
 #define IDC_LIST_FIT_NAME				1077
 #define IDC_LIST_FIT_NAME_LABEL			1078
+
+#define IDC_MAP_CODE					1071
+#define IDC_MAP_OBS						1072
+#define IDC_MAP_FIT						1073
+#define IDC_MAP_RESID					1074
+#define IDC_MAP_FIT_DEGREE				1075
+#define IDC_MAP_FIT_DEGREE_LABEL		1076
+#define IDC_MAP_FIT_NAME				1077
+#define IDC_MAP_FIT_NAME_LABEL			1078
 
 // Next default values for new objects
 // 
