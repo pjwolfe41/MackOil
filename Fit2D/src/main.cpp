@@ -15,7 +15,10 @@ BOOL CALLBACK MapDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
 HINSTANCE ghInstance;
 
+bool dataopen = false;
 char dataname[100] = "";
+char fitreport_filename[200] = "";
+char listreport_filename[200] = "";
 
 
 /*
@@ -61,6 +64,7 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 	OPENFILENAME ofn;
 	char szFile[260];
 	char *p;
+	INT_PTR retval;
 
 	switch (msg) 
 	{
@@ -146,16 +150,22 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			SetDlgItemText(hDlg, IDC_DATA_TITLE, title);
 			SetDlgItemInt(hDlg, IDC_DATA_COUNT, datacount, FALSE);
 			freedata();
+
+			dataopen = true;
 			break;
 
 		case IDC_FIT_BUTTON:
+			if (!dataopen) {
+				MessageBox(0, "You must Open Data first", "Data Not Open", 0);
+				return FALSE;
+			}
 			INT_PTR fitdegree;
 			SetDlgItemText(hDlg, IDC_FIT_STATUS, "");
 			fitdegree = DialogBoxParam(ghInstance, MAKEINTRESOURCE(IDD_FIT_DLG), hDlg, FitDlgProc, NULL);
 			if (fitdegree > 0) {
 				char status[100];
-				sprintf_s(status, sizeof(status), "Fits to degree %d complete; see %s Fit %d Report", 
-					                fitdegree, dataname, fitdegree);
+				sprintf_s(status, sizeof(status), "Fits to degree %d complete; see %s", fitdegree,
+					                                                                fitreport_filename); 
 				SetDlgItemText(hDlg, IDC_FIT_STATUS, status);
 			}
 			else {
@@ -165,16 +175,22 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case IDC_LIST_BUTTON:
-			DialogBoxParam(ghInstance, MAKEINTRESOURCE(IDD_LIST_DLG), hDlg, ListDlgProc, NULL);
-			/*
-			int argc;
-			char *argv[5];
-			argc = 3;
-			argv[0] = "list";
-			argv[1] = "IOSCO";
-			argv[2] = "code";
-			list(argc, argv);
-			*/
+			if (!dataopen) {
+				MessageBox(0, "You must Open Data first", "Data Not Open", 0);
+				return FALSE;
+			}
+			SetDlgItemText(hDlg, IDC_LIST_STATUS, "");
+			retval = DialogBoxParam(ghInstance, MAKEINTRESOURCE(IDD_LIST_DLG), hDlg, ListDlgProc, NULL);
+
+			if (retval) {
+				char status[100];
+				sprintf_s(status, sizeof(status), "List complete; see %s", listreport_filename); 
+				SetDlgItemText(hDlg, IDC_LIST_STATUS, status);
+			}
+			else {
+				SetDlgItemText(hDlg, IDC_LIST_STATUS, "");
+			}
+
 			break;
 
 		case IDC_MAP_BUTTON:
@@ -221,7 +237,9 @@ BOOL CALLBACK FitDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 				MessageBox(0, "Maximum Fit Degree must not exceed 25.", "ERROR", 0);
 				return FALSE;
 			}
-			leastsq(dataname, degree);
+			sprintf_s(fitreport_filename, sizeof(fitreport_filename), "%s Fit %d Report.txt", 
+				                                                   dataname, degree);
+			leastsq(dataname, degree, fitreport_filename);
 			EndDialog(hDlg, degree);
 			break;
 
@@ -275,9 +293,6 @@ BOOL CALLBACK ListDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					return FALSE;
 				}
 				GetDlgItemText(hDlg, IDC_LIST_FIT_NAME, fitdataname, sizeof(fitdataname));
-				if (strcmp(fitdataname, "") == 0) {
-					strcpy_s(fitdataname, sizeof(fitdataname), dataname);
-				}
 			}
 
 			int argc;
@@ -286,16 +301,30 @@ BOOL CALLBACK ListDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			argv[0] = "list";
 			argv[1] = dataname;
 			argv[2] = listtype;
+			textdegree[0] = '\0';
 			if (strcmp(listtype, "fit") == 0 || strcmp(listtype, "resid") == 0) {
 				sprintf_s(textdegree, sizeof(textdegree), "%d", degree);
 				argv[3] = textdegree;
-				argv[4] = fitdataname;
-				argc = 5;
+				argc = 4;
+				if (strcmp(fitdataname, "") != 0) {
+					argv[4] = fitdataname;
+					argc = 5;
+				}
 			}
-			list(argc, argv);
+			sprintf_s(listreport_filename, sizeof(listreport_filename), "%s List %s", dataname, listtype);
+			if (strcmp(textdegree, "") != 0) {
+				strncat_s(listreport_filename, sizeof(listreport_filename), " ", _TRUNCATE);
+				strncat_s(listreport_filename, sizeof(listreport_filename), textdegree, _TRUNCATE);
+			}
+			if (strcmp(fitdataname, "") != 0) {
+				strncat_s(listreport_filename, sizeof(listreport_filename), " ", _TRUNCATE);
+				strncat_s(listreport_filename, sizeof(listreport_filename), fitdataname, _TRUNCATE);
+			}
+			strncat_s(listreport_filename, sizeof(listreport_filename), ".txt", _TRUNCATE);
 
-			// leastsq(dataname, degree);
-			// EndDialog(hDlg, degree);
+			list(argc, argv, listreport_filename);
+
+			EndDialog(hDlg, 1);
 			break;
 
 		case IDCANCEL:

@@ -6,4 +6,4 @@
 **	maxdeg - the maximum degree of fit to be calculated.
 */
 
-void leastsq (char * dataname, int maxdeg);
+void leastsq (char * dataname, int maxdeg, char *fitreport_filename);

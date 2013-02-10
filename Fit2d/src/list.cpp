@@ -13,7 +13,7 @@
 static char *str_center (const char *str, const int len);
 
 
-void list (int argc, char *argv[])
+void list (int argc, char *argv[], char *listreport_filename)
 {
     char *datatitle;
     char *list_title;
@@ -33,7 +33,8 @@ void list (int argc, char *argv[])
 
 	strcpy_s (report, sizeof(report), "IOSCO");
 	strcat_s (report, sizeof(report), " List Report.txt");
-	fopen_s (&rfp, report, "wb");
+
+	fopen_s (&rfp, listreport_filename, "wb");
 	if (rfp == NULL)
 		error_stop ("cannot open file", report);
 
@@ -85,19 +86,19 @@ void list (int argc, char *argv[])
     switch (data_type)
     {
         case CODE:
-	    sprintf_s (list_title, 250, "%s - Station Codes", datatitle);
-	    break;
-        case OBS:
-	    sprintf_s (list_title, 250, "%s - %s Values", datatitle, zname);
-	    break;
-	case FIT:
-	    sprintf_s (list_title, 250, "%s - Degree %d Fit of %s Values",
+			sprintf_s (list_title, 250, "%s - Station Codes", datatitle);
+			break;
+		case OBS:
+			sprintf_s (list_title, 250, "%s - %s Values", datatitle, zname);
+			break;
+		case FIT:
+			sprintf_s (list_title, 250, "%s - Degree %d Fit of %s Values",
 	                                      datatitle, fit_degree, zname);
-	    break;
- 	case RESID:
-	    sprintf_s (list_title, 250, "%s - Degree %d Fit Residual of %s Values",
+			break;
+ 		case RESID:
+			sprintf_s (list_title, 250, "%s - Degree %d Fit Residual of %s Values",
 	                                      datatitle, fit_degree, zname);
-	    break;
+			break;
     }
 
 /*	determine size of z values for output formatting	*/
@@ -141,19 +142,19 @@ void list (int argc, char *argv[])
     {
         double dlat, dat, dlong, dong;
 
-	dlat = floor ((double) y[i]);
-	dat = (y[i] - dlat) * 60.;
-	dlong = floor ((double) x[i]);
-	dong = (x[i] - dlong) * 60.;
+		dlat = floor ((double) y[i]);
+		dat = (y[i] - dlat) * 60.;
+		dlong = floor ((double) x[i]);
+		dong = (x[i] - dlong) * 60.;
 
         fprintf (rfp, "%6ld    %.0f%6.2f    %.0f%6.2f   %*.*f", code[i], dlat, dat, 
 	                                    dlong, dong, zsize, zdigits, z[i]);
-	if (data_type == FIT || data_type == RESID)
-	    fprintf (rfp, "   %*.*f   %*.*f", zsize, zdigits, fit[i],
-	                                zsize, zdigits, resid[i]);
-	fprintf (rfp, "\r\n");
+		if (data_type == FIT || data_type == RESID)
+			fprintf (rfp, "   %*.*f   %*.*f", zsize, zdigits, fit[i], zsize, zdigits, resid[i]);
+		fprintf (rfp, "\r\n");
     }
 
+	fclose(rfp);
 }
 
 /*

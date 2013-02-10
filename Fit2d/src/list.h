@@ -6,4 +6,4 @@
 **	maxdeg - the maximum degree of fit to be calculated.
 */
 
-void list (int argc, char *argv[]);
+void list (int argc, char *argv[], char *listfile_title);

@@ -13,7 +13,7 @@
 **  compute least squares fits; see header file for description.
 */
 
-void leastsq (char *data_name, int max_degree)
+void leastsq (char *data_name, int max_degree, char *fitreport_filename)
 {
     int *mdeg;		/* vector of degrees of fit */
     double *power;	/* vector of x-y powers */
