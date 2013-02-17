@@ -1,2 +1,2 @@
 
-void map (int argc, char *argv[], char *map_filename);
+void map (int argc, char *argv[], HWND hWnd, char *dirpath, char *map_filename);

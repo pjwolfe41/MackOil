@@ -17,10 +17,11 @@ BOOL CALLBACK MapDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 HINSTANCE ghInstance;
 
 bool dataopen = false;
-char dataname[100] = "";
-char fitreport_filename[200] = "";
-char listreport_filename[200] = "";
-char map_filename[200] = "";
+char dataname[MAX_PATH] = {0};
+char datadir[MAX_PATH] = {0};
+char fitreport_filename[MAX_PATH] = {0};
+char listreport_filename[MAX_PATH] = {0};
+char map_filename[MAX_PATH] = {0};
 
 
 /*
@@ -134,6 +135,7 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 				dataname[0] = 0;
 				break;
 			}
+			strcpy_s(datadir, sizeof(datadir), szFile);
 
 			char *title;
             unsigned long *code;
@@ -421,9 +423,9 @@ BOOL CALLBACK MapDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 				strncat_s(map_filename, sizeof(map_filename), " ", _TRUNCATE);
 				strncat_s(map_filename, sizeof(map_filename), fitdataname, _TRUNCATE);
 			}
-			strncat_s(map_filename, sizeof(map_filename), ".ps", _TRUNCATE);
+			strncat_s(map_filename, sizeof(map_filename), ".pdf", _TRUNCATE);
 
-			map(argc, argv, map_filename);
+			map(argc, argv, hDlg, datadir, map_filename);
 
 			EndDialog(hDlg, 1);
 			break;

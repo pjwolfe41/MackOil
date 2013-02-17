@@ -26,8 +26,12 @@ static void write_panel (FILE* mfp, char *maptitle, DATATYPE data_type,
 						 int zdigits,
                          int col, int ncol, int row, int nrow);
 
+void doPrint(HWND hWnd, char *dirpath, char* filename);
+void writePDF(HWND hWnd, char *dirpath, char *filename, HDC hDC);
+void printHeader(HDC hDC);
 
-void map (int argc, char *argv[], char *map_filename)
+
+void map (int argc, char *argv[], HWND hWnd, char *dirpath, char *map_filename)
 {
     char *datatitle;
     char *maptitle;
@@ -44,17 +48,10 @@ void map (int argc, char *argv[], char *map_filename)
     int zdigits;
     unsigned long *code;
 
-	////////////// TEST ARGUMENTS
-	/*
-	int argc = 3;
-	char *argv[10];
-	argv[1] = "atesarea";
-	argv[2] = "obs";
-
-	int retval = SetCurrentDirectory("C:\\MACK\\MackOil\\map");
-	char buf[200];
-	GetCurrentDirectory(200, buf);
-	*/
+	///////////////
+	doPrint(hWnd, dirpath, map_filename);
+	return;
+	///////////////
 
 	FILE *mfp;
 
@@ -340,3 +337,94 @@ static void write_panel (FILE* mfp, char *maptitle, DATATYPE data_type,
 
     fprintf (mfp, "showpage\n");
 }
+
+void doPrint(HWND hWnd, char *dirpath, char *filename)
+{
+	char *pdfDriver = "Win2PDF";
+
+	HDC hDC = CreateDC("WINSPOOL", pdfDriver, NULL, NULL);
+	if (!hDC) {
+		error_stop("cannot open PDF driver: ", pdfDriver);
+	}
+
+	writePDF(hWnd, dirpath, filename, hDC);
+
+	DeleteDC(hDC);
+}
+
+#define DESIRED_PAGE_WIDTH  578
+int pageWidth;
+int pageHeight;
+int currentTop;
+
+void writePDF(HWND hWnd, char *dirpath, char* filename, HDC hDC)
+{	
+	int horzres = GetDeviceCaps(hDC, HORZRES);
+	int vertres = GetDeviceCaps(hDC, VERTRES);
+
+	// Let's find the aspect ratio of the page 
+	double aspectRatio = (double) vertres / (double)horzres;
+
+	pageWidth = DESIRED_PAGE_WIDTH;
+	pageHeight = (int)((double)DESIRED_PAGE_WIDTH * aspectRatio);
+
+	SetMapMode(hDC, MM_ISOTROPIC);
+	SetViewportExtEx(hDC, horzres, vertres, NULL);
+	SetWindowExtEx(hDC, pageWidth, pageHeight, NULL); 
+
+	DOCINFO docInfo = {0};
+	docInfo.cbSize = sizeof(docInfo);
+
+	char fullpath[MAX_PATH] = {0};
+	strcpy_s(fullpath, sizeof(fullpath), dirpath);
+	strcat_s(fullpath, sizeof(fullpath), filename);
+
+	docInfo.lpszDocName = filename;
+	docInfo.lpszOutput = fullpath;
+
+	StartDoc(hDC, &docInfo);
+	
+	StartPage(hDC);
+	printHeader(hDC);
+	EndPage(hDC);
+
+	EndDoc(hDC); 
+}
+
+void printHeader(HDC hDC)
+{
+	HFONT font, oldFont;
+	int oldBkMode, left;
+	COLORREF oldTextColor;
+
+	char headerline[] = "THIS IS THE HEADER LINE";
+	char *nextline;
+	int nline = 1;
+	currentTop = 0;
+	
+	if (hDC) {		
+		font = CreateFont(9, 0, 0, 0, 500,								
+					   0, 0, 0, 0, OUT_TT_PRECIS, 0, CLEARTYPE_NATURAL_QUALITY, 0, "Tahoma");	   
+
+		oldFont = (HFONT) SelectObject(hDC, font);
+		oldBkMode = SetBkMode(hDC, TRANSPARENT);
+		oldTextColor = SetTextColor(hDC, RGB(48, 48, 48));
+
+		left = pageWidth / 10;
+
+		currentTop += 12;
+
+		for (int i = 0; i < nline; ++i) {
+			nextline = headerline + i * 100; 
+			currentTop += 12;
+			TextOut(hDC, left, currentTop, nextline, (int) strlen(nextline));
+		}
+			
+		SelectObject(hDC, oldFont);
+		SetBkMode(hDC, oldBkMode);
+		SetTextColor(hDC, oldTextColor);
+		DeleteObject(font);
+	}
+}
+
+
