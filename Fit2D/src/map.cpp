@@ -26,9 +26,18 @@ static void write_panel (FILE* mfp, char *maptitle, DATATYPE data_type,
 						 int zdigits,
                          int col, int ncol, int row, int nrow);
 
-void doPrint(HWND hWnd, char *dirpath, char* filename);
-void writePDF(HWND hWnd, char *dirpath, char *filename, HDC hDC);
-void printHeader(HDC hDC);
+void startPrint(HWND hWnd, char *dirpath, char* filename, char* maptitle);
+void printHeader(char* maptitle);
+void postPoint(int x, int y, char* value, char *labelfont, int labelsize, int labelrotate);
+void printStations (DATATYPE data_type, int npoint, unsigned long *code,
+				    double *x_inch, double *y_inch, double *zval,
+				    double *fit, double *resid,
+				    double hscale, double vscale,
+				    double xmin, double xmax, double ymin, double ymax,
+				    int zdigits);
+void endPrint();
+
+HDC pdfDC;
 
 
 void map (int argc, char *argv[], HWND hWnd, char *dirpath, char *map_filename)
@@ -42,22 +51,10 @@ void map (int argc, char *argv[], HWND hWnd, char *dirpath, char *map_filename)
     double *x, *y, *z;
     double *fit, *resid;
     int fit_degree;
-    int i, j, k;
-    int ncol, nrow;
+    int i, k;
     int npoint;
     int zdigits;
     unsigned long *code;
-
-	///////////////
-	doPrint(hWnd, dirpath, map_filename);
-	return;
-	///////////////
-
-	FILE *mfp;
-
-	fopen_s (&mfp, map_filename, "wb");
-	if (mfp == NULL)
-		error_stop ("cannot open file", map_filename);
 
 /*	get data to plot	*/
 
@@ -122,7 +119,6 @@ void map (int argc, char *argv[], HWND hWnd, char *dirpath, char *map_filename)
 			break;
     }
 
-
 /*	determine range of coordinate values	*/
 
     xmin = ymin = 1.e+30;
@@ -162,7 +158,7 @@ void map (int argc, char *argv[], HWND hWnd, char *dirpath, char *map_filename)
             y[i] = y[i] / vscale;
         }
 
-        {				/* must also switch sign on	*/
+        {							/* must also switch sign on	*/
 			double hold = xmin;		/* xmin and xmax		*/
 			xmin = - xmax / hscale;
             xmax = - hold / hscale;
@@ -172,195 +168,32 @@ void map (int argc, char *argv[], HWND hWnd, char *dirpath, char *map_filename)
         ymax = ymax / vscale;
     }
 
-/*	determine grid of panels	*/
+/*	create pdf map file */
 
-    // ymax += 1;		/* leave one inch at top for the title */
-
-#define PANEL_WIDTH_INCHES  26.0	// 7.5
-#define PANEL_HEIGHT_INCHES 22.0	// 10.0
-
-    ncol = (int) ceil ((xmax - xmin) / PANEL_WIDTH_INCHES);	
-    nrow = (int) ceil ((ymax - ymin) / PANEL_HEIGHT_INCHES);
-
-	/*
-    xmin = xmin + (xmax - xmin - PANEL_WIDTH_INCHES * ncol) / 2;
-    xmax = xmin + ncol * PANEL_WIDTH_INCHES;
-    ymin = ymin + (ymax - ymin - PANEL_HEIGHT_INCHES * nrow) / 2;
-    ymax = ymin + nrow * PANEL_HEIGHT_INCHES;
-	*/
-
-/*	loop to write panels	*/
-
-    for (j = 0; j < ncol; j++)
-    {
-        for (k = 0; k < nrow; k++)
-			write_panel (mfp, maptitle, data_type,
-	                 npoint, code, 
-					 x, y, z, 
-					 fit, resid,
-					 hscale, vscale,
-					 xmin, xmax, ymin, ymax,
-					 zdigits,
-	                 j, ncol, k, nrow);
-    }
-
-    return;
+	startPrint(hWnd, dirpath, map_filename, maptitle);
+	printHeader(maptitle);
+	printStations(data_type, npoint, code, x, y, z, fit, resid,
+				  hscale, vscale, xmin, xmax, ymin, ymax, zdigits);
+	endPrint();
+	return;
 }
 
-/*	local subroutine to write one panel	*/
-
-static void write_panel (FILE* mfp, char *maptitle, DATATYPE data_type,
-                         int npoint, unsigned long *code,
-						 double *x_inch, double *y_inch, double *zval,
-						 double *fit, double *resid,
-						 double hscale, double vscale,
-						 double xmin, double xmax, double ymin, double ymax,
-						 int zdigits,
-                         int col, int ncol, int row, int nrow)
-{
-    int i;
-    double x, y;
-    double xleft, xright;
-    double ybot, ytop;
-
-    static char column_label[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-/*	determine border of the panel	*/
-
-    xleft = xmin + col * PANEL_WIDTH_INCHES; 
-    xright = xleft + PANEL_WIDTH_INCHES;
-    //xleft -= .5;   ????
-    //xright += .5;
-    ytop = ymax - row * PANEL_HEIGHT_INCHES;
-    ybot = ytop - PANEL_HEIGHT_INCHES;
-    //ytop += .5;
-    //ybot -= .5;
-
-/*	put instructions for assembly along the borders of the panel	*/
-
-    fprintf (mfp, "/Helvetica findfont\n");
-    fprintf (mfp, "10 scalefont setfont\n");
-
-	/*
-    if (col > 0)
-        fprintf (mfp, "(%s  panel %c-%d   attach panel %c-%d here) attachleft\n", 
-			 maptitle, column_label[col], row + 1, column_label[col - 1], row + 1);
-    if (row > 0)
-        fprintf (mfp, "(%s  panel %c-%d   attach panel %c-%d here) attachtop\n",
-	         maptitle, column_label[col], row + 1, column_label[col], row);
-    if (col < ncol - 1)
-        fprintf (mfp, "(%s  panel %c-%d   attach panel %c-%d here) attachright\n",
-			maptitle, column_label[col], row + 1, column_label[col + 1], row + 1);
-    if (row < nrow - 1)
-        fprintf (mfp, "(%s  panel %c-%d   attach panel %c-%d here) attachbottom\n",
-			maptitle, column_label[col], row + 1, column_label[col], row + 2);
-	*/
-
-/*	draw the map border	*/
-
-	/*
-    fprintf (mfp, "%g %g %g %g mapborder\n", xmin - xleft, xmax - xleft,
-                                       ymin - ybot, ymax - ybot);
-    */
-
-/*	define clipping area for remaining information	*/
-
-	/*
-    fprintf (mfp, "clippage\n");
-	*/
-
-/*	put the title at the top center of the top row panels	*/
-
-	/*
-    if (row == 0)
-    {
-        fprintf (mfp, "/Helvetica findfont\n");
-        fprintf (mfp, "18 scalefont setfont\n");
-
-		fprintf (mfp, "%g inch 20.5 inch moveto\n", PANEL_WIDTH_INCHES / 3);  // (xmin + xmax) / 2 - xleft);
-		fprintf (mfp, "(%s) centeredshow\n", maptitle);
-    }
-	*/
-
-/*	add labels and lines from the options file	*/
-
-    opt_maplabel (hscale, vscale, xleft, ybot);
-    opt_mapline (hscale, vscale, xleft, ybot);
-
-/*	define parameters of posted values	*/
-
-    {
-        char *labelfont;
-		int labelsize;
-		int labelrotate;
-
-        opt_post (&labelfont, &labelsize, &labelrotate);
-
-        fprintf (mfp, "/%s findfont\n", labelfont);
-        fprintf (mfp, "%d scalefont setfont\n", labelsize);
-		fprintf (mfp, "/labelrotate %d def\n", labelrotate);
-		fprintf (mfp, "/labelxpos %d def\n", 3);
-		fprintf (mfp, "/labelypos %d def\n", -3);
-    }
-
-/*	post the points		*/
-
-    for (i = 0; i < npoint; i++)
-    {
-        // x = x_inch[i] + 3.0;
-		x = x_inch[i];
-        if (x < xleft || x > xright)
-			continue;
-		y = y_inch[i];
-		if (y < ybot || y > ytop)
-			continue;
-		fprintf (mfp, "%g inch %g inch moveto ", x - xleft, y - ybot);
-		switch (data_type)
-		{
-			case CODE:
-				fprintf (mfp, "(%ld)", code[i]);
-				break;
-			case OBS:
-				fprintf (mfp, "(%.*f)", zdigits, zval[i]);
-				break;
-			case FIT:
-				fprintf (mfp, "(%.*f)", zdigits, fit[i]);
-				break;
-			case RESID:
-				fprintf (mfp, "(%.*f)", zdigits, resid[i]);
-				break;
-		}
-		fprintf (mfp, " postpoint\n");
-    }
-
-/*	display the page	*/
-
-    fprintf (mfp, "showpage\n");
-}
-
-void doPrint(HWND hWnd, char *dirpath, char *filename)
-{
-	char *pdfDriver = "Win2PDF";
-
-	HDC hDC = CreateDC("WINSPOOL", pdfDriver, NULL, NULL);
-	if (!hDC) {
-		error_stop("cannot open PDF driver: ", pdfDriver);
-	}
-
-	writePDF(hWnd, dirpath, filename, hDC);
-
-	DeleteDC(hDC);
-}
-
-#define DESIRED_PAGE_WIDTH  578
+#define DESIRED_PAGE_WIDTH  600
 int pageWidth;
 int pageHeight;
 int currentTop;
 
-void writePDF(HWND hWnd, char *dirpath, char* filename, HDC hDC)
-{	
-	int horzres = GetDeviceCaps(hDC, HORZRES);
-	int vertres = GetDeviceCaps(hDC, VERTRES);
+void startPrint(HWND hWnd, char *dirpath, char *filename, char* maptitle)
+{
+	char *pdfDriver = "Win2PDF";
+
+	pdfDC = CreateDC("WINSPOOL", pdfDriver, NULL, NULL);
+	if (!pdfDC) {
+		error_stop("cannot open PDF driver: ", pdfDriver);
+	}
+
+	int horzres = GetDeviceCaps(pdfDC, HORZRES);
+	int vertres = GetDeviceCaps(pdfDC, VERTRES);
 
 	// Let's find the aspect ratio of the page 
 	double aspectRatio = (double) vertres / (double)horzres;
@@ -368,9 +201,9 @@ void writePDF(HWND hWnd, char *dirpath, char* filename, HDC hDC)
 	pageWidth = DESIRED_PAGE_WIDTH;
 	pageHeight = (int)((double)DESIRED_PAGE_WIDTH * aspectRatio);
 
-	SetMapMode(hDC, MM_ISOTROPIC);
-	SetViewportExtEx(hDC, horzres, vertres, NULL);
-	SetWindowExtEx(hDC, pageWidth, pageHeight, NULL); 
+	SetMapMode(pdfDC, MM_ISOTROPIC);
+	SetViewportExtEx(pdfDC, horzres, vertres, NULL);
+	SetWindowExtEx(pdfDC, pageWidth, pageHeight, NULL); 
 
 	DOCINFO docInfo = {0};
 	docInfo.cbSize = sizeof(docInfo);
@@ -382,49 +215,148 @@ void writePDF(HWND hWnd, char *dirpath, char* filename, HDC hDC)
 	docInfo.lpszDocName = filename;
 	docInfo.lpszOutput = fullpath;
 
-	StartDoc(hDC, &docInfo);
-	
-	StartPage(hDC);
-	printHeader(hDC);
-	EndPage(hDC);
-
-	EndDoc(hDC); 
+	StartDoc(pdfDC, &docInfo);
+	StartPage(pdfDC);
 }
 
-void printHeader(HDC hDC)
+void endPrint()
+{
+	EndPage(pdfDC);
+	EndDoc(pdfDC); 
+
+	DeleteDC(pdfDC);
+}
+
+void printHeader(char* maptitle)
 {
 	HFONT font, oldFont;
 	int oldBkMode, left;
 	COLORREF oldTextColor;
+	SIZE sz;
 
-	char headerline[] = "THIS IS THE HEADER LINE";
-	char *nextline;
-	int nline = 1;
 	currentTop = 0;
 	
-	if (hDC) {		
-		font = CreateFont(9, 0, 0, 0, 500,								
-					   0, 0, 0, 0, OUT_TT_PRECIS, 0, CLEARTYPE_NATURAL_QUALITY, 0, "Tahoma");	   
+	if (pdfDC) {		
+		font = CreateFont(11, 0, 0, 0, 500,								
+					   0, 0, 0, 0, OUT_TT_PRECIS, 0, CLEARTYPE_NATURAL_QUALITY, 0, "Helvetica-Bold");	   
 
-		oldFont = (HFONT) SelectObject(hDC, font);
-		oldBkMode = SetBkMode(hDC, TRANSPARENT);
-		oldTextColor = SetTextColor(hDC, RGB(48, 48, 48));
+		oldFont = (HFONT) SelectObject(pdfDC, font);
+		oldBkMode = SetBkMode(pdfDC, TRANSPARENT);
+		oldTextColor = SetTextColor(pdfDC, RGB(48, 48, 48));
 
-		left = pageWidth / 10;
+		GetTextExtentPoint(pdfDC, maptitle, (int)strlen(maptitle), &sz);
+		left = pageWidth / 2 - sz.cx / 2;
+		currentTop = sz.cy + 1;
 
-		currentTop += 12;
-
-		for (int i = 0; i < nline; ++i) {
-			nextline = headerline + i * 100; 
-			currentTop += 12;
-			TextOut(hDC, left, currentTop, nextline, (int) strlen(nextline));
-		}
+		TextOut(pdfDC, left, currentTop, maptitle, (int) strlen(maptitle));
 			
-		SelectObject(hDC, oldFont);
-		SetBkMode(hDC, oldBkMode);
-		SetTextColor(hDC, oldTextColor);
+		SelectObject(pdfDC, oldFont);
+		SetBkMode(pdfDC, oldBkMode);
+		SetTextColor(pdfDC, oldTextColor);
 		DeleteObject(font);
 	}
 }
 
+void postPoint(int x, int y, char* value, char *labelfont, int labelsize, int labelrotate)
+{
+	HFONT font, oldFont;
+	int oldBkMode;
+	COLORREF oldTextColor;
+	HPEN drawPen, oldPen;
+
+	currentTop = 0;
+	
+	if (pdfDC) {		
+		font = CreateFont(labelsize, 0, labelrotate * 10, labelrotate * 10, 500,								
+					   0, 0, 0, 0, OUT_TT_PRECIS, 0, CLEARTYPE_NATURAL_QUALITY, 0, labelfont);	   
+
+		oldFont = (HFONT) SelectObject(pdfDC, font);
+		oldBkMode = SetBkMode(pdfDC, TRANSPARENT);
+		oldTextColor = SetTextColor(pdfDC, RGB(48, 48, 48));
+
+		drawPen = CreatePen(PS_SOLID, 1, 0);
+		oldPen = (HPEN) SelectObject(pdfDC, drawPen);
+		SelectObject(pdfDC, drawPen);
+		Rectangle(pdfDC, x, y, x + 1, y + 1);
+
+		TextOut(pdfDC, x + 3, y - labelsize / 2, value, (int) strlen(value));
+			
+		SelectObject(pdfDC, oldFont);
+		SetBkMode(pdfDC, oldBkMode);
+		SetTextColor(pdfDC, oldTextColor);
+		DeleteObject(font);
+
+		SelectObject(pdfDC, oldPen);
+		DeleteObject(drawPen);
+	}
+}
+
+void printStations (DATATYPE data_type, int npoint, unsigned long *code,
+				    double *x_inch, double *y_inch, double *zval,
+				    double *fit, double *resid,
+				    double hscale, double vscale,
+				    double xmin, double xmax, double ymin, double ymax,
+				    int zdigits)
+{
+    double x, y;
+	int ix, iy;
+    double xleft, xright;
+    double ybot, ytop;
+	char value[100];
+
+/*	determine border of the panel	*/
+
+    xleft = xmin; 
+    xright = xmax;
+    ytop = ymax;
+	ybot = ymin;
+
+	double xscale = pageWidth / (xmax - xmin);
+	double yscale = pageHeight / (ymax - ymin);
+
+/*	add labels and lines from the options file	*/
+
+    // opt_maplabel (hscale, vscale, xleft, ybot);
+    // opt_mapline (hscale, vscale, xleft, ybot);
+
+/*	define parameters of posted values	*/
+
+	char *labelfont;
+	int labelsize;
+	int labelrotate;
+
+	opt_post(&labelfont, &labelsize, &labelrotate);
+
+/*	post the points		*/
+
+    for (int i = 0; i < npoint; i++)
+    {
+		x = x_inch[i];
+        if (x < xleft || x > xright)
+			continue;
+		y = y_inch[i];
+		if (y < ybot || y > ytop)
+			continue;
+		ix = (int) ((x - xleft) * xscale);
+		iy = (int) ((y - ybot) * yscale);
+
+		switch (data_type)
+		{
+			case CODE:
+				sprintf_s (value, sizeof(value), "%ld", code[i]);
+				break;
+			case OBS:
+				sprintf_s (value, sizeof(value), "%.*f", zdigits, zval[i]);
+				break;
+			case FIT:
+				sprintf_s (value, sizeof(value), "%.*f", zdigits, fit[i]);
+				break;
+			case RESID:
+				sprintf_s (value, sizeof(value), "%.*f", zdigits, resid[i]);
+				break;
+		}
+		
+		postPoint(ix, iy, value, labelfont, labelsize, labelrotate);
+    }
+}
 

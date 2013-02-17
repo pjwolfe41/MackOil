@@ -55,17 +55,17 @@ void list (int argc, char *argv[], char *listreport_filename)
 		}
         if (opt_select (code[i], x[i], y[i], z[i], fit_degree, fitval, residval))
         {
-	    code[k] = code[i];
-	    x[k] = x[i];
-	    y[k] = y[i];
-	    z[k] = z[i];
-	    if (fit_degree)
-	    {
-	        fit[k] = fit[i];
-		resid[k] = resid[i];
-	    }
-	    ++k;
-	}
+			code[k] = code[i];
+			x[k] = x[i];
+			y[k] = y[i];
+			z[k] = z[i];
+			if (fit_degree)
+			{
+				fit[k] = fit[i];
+				resid[k] = resid[i];
+			}
+			++k;
+		}
     }
     npoint = k;
     if (npoint == 0)
