@@ -52,7 +52,9 @@ void opt_maplabel (HDC pdfDC, double hscale, double vscale, double xleft, double
 **	ybot - the bottom border of the current map panel.
 */
 
-void opt_mapline (double hscale, double vscale, double xleft, double ybot);
+void opt_mapline (HDC pdfDC, double hscale, double vscale, double xleft, double ybot, 
+				                                double xscale, double yscale, int border);
+
 
 /*
 **  opt_select - see if a point satisfies the option SELECT conditions.

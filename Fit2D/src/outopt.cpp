@@ -231,9 +231,11 @@ void opt_maplabel (HDC pdfDC, double hscale, double vscale, double xleft, double
 **  draw option MAPLINE lines on the map; see header file for description.
 */
 
-void opt_mapline (double hscale, double vscale, double xleft, double ybot)
+void opt_mapline (HDC pdfDC, double hscale, double vscale, double xleft, double ybot, 
+				                                double xscale, double yscale, int border)
 {
     int i;
+	HPEN drawPen, oldPen;
 
     read_output_opt ();
 
@@ -241,26 +243,37 @@ void opt_mapline (double hscale, double vscale, double xleft, double ybot)
     {
         int j;
 
-        printf ("gsave\n");
-		printf ("%g setgray\n", mapline.maplin[i].intensity);
-		printf ("%d setlinewidth\n", mapline.maplin[i].width);
-		printf ("newpath\n");
+		int intensity = (int) (mapline.maplin[i].intensity * 255);
+
+		drawPen = CreatePen(PS_SOLID, mapline.maplin[i].width, RGB(intensity, intensity, intensity));
+		oldPen = (HPEN) SelectObject(pdfDC, drawPen);
+		SelectObject(pdfDC, drawPen);
+
 		for (j = 0; j < mapline.maplin[i].npoint; j++)
 		{
 			double xx, yy;
+			int ix, iy;
 
 			xx = - mapline.maplin[i].x[j];
-			xx = xx / hscale - xleft;
+			xx = xx / hscale;
 			yy = mapline.maplin[i].y[j];
-			yy = yy / vscale - ybot;
-			printf ("%g inch %g inch", xx, yy);
-			if (j == 0)
-				printf (" moveto\n");
-			else
-				printf (" lineto\n");
+			yy = yy / vscale;
+
+			ix = (int) ((xx - xleft) * xscale);
+			iy = (int) ((yy - ybot) * yscale);
+
+			ix += border;
+			iy += border;
+
+			if (j == 0) {
+				MoveToEx(pdfDC, ix, iy, NULL);
+			}
+			else {
+				LineTo(pdfDC, ix, iy);
+			}
 		}
-		printf ("stroke\n");
-        printf ("grestore\n");
+		SelectObject(pdfDC, oldPen);
+		DeleteObject(drawPen);
     }
 }
 

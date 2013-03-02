@@ -64,8 +64,8 @@ POST  Helvetica-Bold  8  45
 //	rotate   - the number of degrees that the label is to be rotated 
 //	           from the horizontal
 
-MAPLABEL "HELLO" 83.7 44.4 "Helvetica" 12 0
-MAPLABEL "AGAIN" 83.75 44.42 "Helvetica" 12 90
+// MAPLABEL "HELLO" 83.7 44.4 "Helvetica" 12 0
+// MAPLABEL "AGAIN" 83.75 44.42 "Helvetica" 12 90
 
 //  MAPLINE specifies a line that is to be drawn on the map; there can be
 //  several MAPLINEs but none is required
@@ -83,6 +83,8 @@ MAPLABEL "AGAIN" 83.75 44.42 "Helvetica" 12 90
 //                  
 //  as many coordinate pairs as required can be used, to draw any desired
 //  shape
+
+// MAPLINE 1 .8 83.72 44.41 83.73 44.41 83.73 44.42 83.72 44.42
 
 
 //  SELECT specifies a condition to be used to select points for inclusion

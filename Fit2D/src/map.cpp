@@ -328,6 +328,8 @@ void printStations (DATATYPE data_type, int npoint, unsigned long *code,
 
     opt_maplabel (pdfDC, hscale, vscale, xleft, ybot, xscale, yscale, BORDER);
 
+	opt_mapline (pdfDC, hscale, vscale, xleft, ybot, xscale, yscale, BORDER);
+
 /*	define parameters of posted values	*/
 
 	char *labelfont;
