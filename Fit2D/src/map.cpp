@@ -326,8 +326,7 @@ void printStations (DATATYPE data_type, int npoint, unsigned long *code,
 
 /*	add labels and lines from the options file	*/
 
-    // opt_maplabel (hscale, vscale, xleft, ybot);
-    // opt_mapline (hscale, vscale, xleft, ybot);
+    opt_maplabel (pdfDC, hscale, vscale, xleft, ybot, xscale, yscale, BORDER);
 
 /*	define parameters of posted values	*/
 

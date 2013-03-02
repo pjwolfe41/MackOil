@@ -173,28 +173,58 @@ void opt_contour (double *intervalsize, int *nlevels,
 **  draw option MAPLABEL labels on the map; see header file for description.
 */
 
-void opt_maplabel (double hscale, double vscale, double xleft, double ybot)
+void opt_maplabel (HDC pdfDC, double hscale, double vscale, double xleft, double ybot, 
+				                                 double xscale, double yscale, int border)
 {
     int i;
+
+	if (!pdfDC) {
+		return;
+	}
 
     read_output_opt ();
 
     for (i = 0; i < maplabel.nspec; i++)
     {
-        double xx, yy;
+		HFONT font, oldFont;
+		int oldBkMode;
+		COLORREF oldTextColor;
+		HPEN drawPen, oldPen;		
+			
+		font = CreateFont(maplabel.maplab[i].fontsize, 0, 
+			                       maplabel.maplab[i].rotate * 10, maplabel.maplab[i].rotate * 10, 500,								
+					   0, 0, 0, 0, OUT_TT_PRECIS, 0, CLEARTYPE_NATURAL_QUALITY, 0, maplabel.maplab[i].font);	   
 
-		printf ("gsave\n");
-        printf ("/%s findfont\n", maplabel.maplab[i].font);
-		printf ("%d scalefont setfont\n", maplabel.maplab[i].fontsize);
-		xx = - maplabel.maplab[i].xpos;
-		xx = xx / hscale - xleft;
-		yy = maplabel.maplab[i].ypos;
-		yy = yy / vscale - ybot;
-		printf ("%g inch %g inch moveto\n", xx, yy);
-		printf ("%d rotate\n", maplabel.maplab[i].rotate);
-		printf ("(%s) centeredshow\n", maplabel.maplab[i].label);
-		printf ("grestore\n");
-    }
+		oldFont = (HFONT) SelectObject(pdfDC, font);
+		oldBkMode = SetBkMode(pdfDC, TRANSPARENT);
+		oldTextColor = SetTextColor(pdfDC, RGB(48, 48, 48));
+
+		drawPen = CreatePen(PS_SOLID, 1, 0);
+		oldPen = (HPEN) SelectObject(pdfDC, drawPen);
+		SelectObject(pdfDC, drawPen);
+
+		double xx = - maplabel.maplab[i].xpos;
+		xx = xx / hscale;
+		double yy = maplabel.maplab[i].ypos;
+		yy = yy / vscale;
+
+		int ix = (int) ((xx - xleft) * xscale);
+		int iy = (int) ((yy - ybot) * yscale);
+
+		ix += border;
+		iy += border;
+
+		TextOut(pdfDC, ix + 3, iy - maplabel.maplab[i].fontsize / 2, 
+		                          maplabel.maplab[i].label, (int) strlen(maplabel.maplab[i].label));
+			
+		SelectObject(pdfDC, oldFont);
+		SetBkMode(pdfDC, oldBkMode);
+		SetTextColor(pdfDC, oldTextColor);
+		DeleteObject(font);
+
+		SelectObject(pdfDC, oldPen);
+		DeleteObject(drawPen);
+	}
 }
 
 /*

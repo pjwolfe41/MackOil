@@ -39,7 +39,8 @@ void opt_post (char **labelfont, int *labelsize, int *labelrotate);
 **	ybot - the bottom border of the current map panel.
 */
 
-void opt_maplabel (double hscale, double vscale, double xleft, double ybot);
+void opt_maplabel (HDC pdfDC, double hscale, double vscale, double xleft, double ybot, 
+				                                double xscale, double yscale, int border);
 
 /*
 **  opt_mapline - draw option MAPLINE lines on the map.
