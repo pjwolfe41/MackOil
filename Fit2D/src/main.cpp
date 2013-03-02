@@ -77,6 +77,8 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 		SetDlgItemText(hDlg, IDC_DATA_COUNT, "");
 		
 		SetDlgItemText(hDlg, IDC_FIT_STATUS, "");
+		SetDlgItemText(hDlg, IDC_LIST_STATUS, "");
+		SetDlgItemText(hDlg, IDC_MAP_STATUS, "");
 
 		return TRUE;
 
@@ -89,6 +91,8 @@ BOOL CALLBACK MainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			SetDlgItemText(hDlg, IDC_DATA_COUNT, "");
 
 			SetDlgItemText(hDlg, IDC_FIT_STATUS, "");
+			SetDlgItemText(hDlg, IDC_LIST_STATUS, "");
+			SetDlgItemText(hDlg, IDC_MAP_STATUS, "");
 
 			ZeroMemory(&ofn, sizeof(ofn));
 			ofn.lStructSize = sizeof(ofn);
