@@ -277,9 +277,17 @@ void postPoint(int x, int y, char* value, char *labelfont, int labelsize, int la
 		drawPen = CreatePen(PS_SOLID, 1, 0);
 		oldPen = (HPEN) SelectObject(pdfDC, drawPen);
 		SelectObject(pdfDC, drawPen);
-		Rectangle(pdfDC, x, y, x + 1, y + 1);
+		Ellipse(pdfDC, x, y, x + 1, y + 1);
 
-		TextOut(pdfDC, x + 3, y - labelsize / 2, value, (int) strlen(value));
+		if (labelrotate <= 30) {
+			TextOut(pdfDC, x + 3, y - labelsize / 2, value, (int) strlen(value));
+		}
+		else if (labelrotate <= 60) {
+			TextOut(pdfDC, x + 3, y - labelsize, value, (int) strlen(value));
+		}
+		else {
+			TextOut(pdfDC, x - labelsize / 2, y - labelsize / 2, value, (int) strlen(value));
+		}
 			
 		SelectObject(pdfDC, oldFont);
 		SetBkMode(pdfDC, oldBkMode);
@@ -290,6 +298,8 @@ void postPoint(int x, int y, char* value, char *labelfont, int labelsize, int la
 		DeleteObject(drawPen);
 	}
 }
+
+#define BORDER 50
 
 void printStations (DATATYPE data_type, int npoint, unsigned long *code,
 				    double *x_inch, double *y_inch, double *zval,
@@ -304,15 +314,15 @@ void printStations (DATATYPE data_type, int npoint, unsigned long *code,
     double ybot, ytop;
 	char value[100];
 
-/*	determine border of the panel	*/
+/*	determine border of the page	*/
 
     xleft = xmin; 
     xright = xmax;
     ytop = ymax;
 	ybot = ymin;
 
-	double xscale = pageWidth / (xmax - xmin);
-	double yscale = pageHeight / (ymax - ymin);
+	double xscale = (pageWidth - 2 * BORDER) / (xmax - xmin);
+	double yscale = (pageHeight - 2 * BORDER) / (ymax - ymin);
 
 /*	add labels and lines from the options file	*/
 
@@ -339,6 +349,9 @@ void printStations (DATATYPE data_type, int npoint, unsigned long *code,
 			continue;
 		ix = (int) ((x - xleft) * xscale);
 		iy = (int) ((y - ybot) * yscale);
+
+		ix += BORDER;
+		iy += BORDER;
 
 		switch (data_type)
 		{
