@@ -201,7 +201,7 @@ void opt_maplabel (HDC pdfDC, double hscale, double vscale, double xleft, double
 
 		drawPen = CreatePen(PS_SOLID, 1, 0);
 		oldPen = (HPEN) SelectObject(pdfDC, drawPen);
-		SelectObject(pdfDC, drawPen);
+		//SelectObject(pdfDC, drawPen);
 
 		double xx = - maplabel.maplab[i].xpos;
 		xx = xx / hscale;
@@ -247,7 +247,7 @@ void opt_mapline (HDC pdfDC, double hscale, double vscale, double xleft, double 
 
 		drawPen = CreatePen(PS_SOLID, mapline.maplin[i].width, RGB(intensity, intensity, intensity));
 		oldPen = (HPEN) SelectObject(pdfDC, drawPen);
-		SelectObject(pdfDC, drawPen);
+		//SelectObject(pdfDC, drawPen);
 
 		for (j = 0; j < mapline.maplin[i].npoint; j++)
 		{

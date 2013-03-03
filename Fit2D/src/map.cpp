@@ -276,7 +276,7 @@ void postPoint(int x, int y, char* value, char *labelfont, int labelsize, int la
 
 		drawPen = CreatePen(PS_SOLID, 1, 0);
 		oldPen = (HPEN) SelectObject(pdfDC, drawPen);
-		SelectObject(pdfDC, drawPen);
+		//SelectObject(pdfDC, drawPen);
 		Ellipse(pdfDC, x, y, x + 1, y + 1);
 
 		if (labelrotate <= 30) {
