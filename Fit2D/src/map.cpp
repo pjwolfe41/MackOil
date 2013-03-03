@@ -280,10 +280,10 @@ void postPoint(int x, int y, char* value, char *labelfont, int labelsize, int la
 		Ellipse(pdfDC, x, y, x + 1, y + 1);
 
 		if (labelrotate <= 30) {
-			TextOut(pdfDC, x + 3, y - labelsize / 2, value, (int) strlen(value));
+			TextOut(pdfDC, x + 2, y - labelsize / 2, value, (int) strlen(value));
 		}
 		else if (labelrotate <= 60) {
-			TextOut(pdfDC, x + 3, y - labelsize, value, (int) strlen(value));
+			TextOut(pdfDC, x + 1, y - (labelsize * 2) / 3, value, (int) strlen(value));
 		}
 		else {
 			TextOut(pdfDC, x - labelsize / 2, y - labelsize / 2, value, (int) strlen(value));
